@@ -1,5 +1,5 @@
-!classDefinition: #HabitatDeAvispas category: 'AvispasYAbejas'!
-DenotativeObject subclass: #HabitatDeAvispas
+!classDefinition: #HabitatDeCiudadVespula category: 'AvispasYAbejas'!
+DenotativeObject subclass: #HabitatDeCiudadVespula
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -7,123 +7,140 @@ DenotativeObject subclass: #HabitatDeAvispas
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'HabitatDeAvispas class' category: 'AvispasYAbejas'!
-HabitatDeAvispas class
-	instanceVariableNames: 'cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella cantidadDePolillas cantidadDeOrugas cantidadDeHuevosDeAvispas cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara'!
+!classDefinition: 'HabitatDeCiudadVespula class' category: 'AvispasYAbejas'!
+HabitatDeCiudadVespula class
+	instanceVariableNames: 'cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella cantidadDePolillasTotales cantidadDeOrugasTotales cantidadDeHuevosDeAvispasTotales cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara'!
 
-!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 13:36:23'!
+!HabitatDeCiudadVespula class methodsFor: 'información' stamp: 'JGC 4/22/2022 13:36:23'!
 cantidadDeHuevosConLaFirmaGeneticaDeLara
 	^cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara.! !
 
-!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 12:44:56'!
+!HabitatDeCiudadVespula class methodsFor: 'información' stamp: 'JGC 4/22/2022 12:44:56'!
 cantidadDeHuevosConLaFirmaGeneticaDeOriana
 	^cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella.
 	! !
 
-!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 00:51:30'!
+!HabitatDeCiudadVespula class methodsFor: 'información' stamp: 'JGC 4/22/2022 00:51:30'!
 cantidadDeHuevosConLaFirmaGeneticaDeOrnella
 	^self cantidadDeHuevosConLaFirmaGeneticaDeOriana.
 	! !
 
-!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 12:30:34'!
+!HabitatDeCiudadVespula class methodsFor: 'información' stamp: 'JGC 4/22/2022 12:30:34'!
 cantidadDeHuevosConLaFirmaGeneticaDePolly
 	^cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly.! !
 
-!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 12:30:41'!
+!HabitatDeCiudadVespula class methodsFor: 'información' stamp: 'MS 4/22/2022 14:56:34'!
 cantidadDeHuevosDeAvispas
-	^cantidadDeHuevosDeAvispas.! !
+	^cantidadDeHuevosDeAvispasTotales.! !
 
-!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 12:29:59'!
+!HabitatDeCiudadVespula class methodsFor: 'información' stamp: 'MS 4/22/2022 14:56:51'!
 cantidadDeOrugas
-	^cantidadDeOrugas.! !
+	^cantidadDeOrugasTotales.! !
 
-!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 12:29:56'!
+!HabitatDeCiudadVespula class methodsFor: 'información' stamp: 'MS 4/22/2022 14:56:58'!
 cantidadDePolillas
-	^cantidadDePolillas.! !
+	^cantidadDePolillasTotales.! !
 
-!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 13:05:02'!
+!HabitatDeCiudadVespula class methodsFor: 'información' stamp: 'MS 4/22/2022 14:56:51'!
 hayOrugas
-	^cantidadDeOrugas > 0.! !
+	^cantidadDeOrugasTotales > 0.! !
 
-!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 13:05:13'!
+!HabitatDeCiudadVespula class methodsFor: 'información' stamp: 'MS 4/22/2022 14:56:58'!
 hayPolillas
-	^cantidadDePolillas > 0.! !
+	^cantidadDePolillasTotales > 0.! !
 
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:03:23'!
-agregarHuevoDeAvispa
-	cantidadDeHuevosDeAvispas  := cantidadDeHuevosDeAvispas  + 1.! !
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:56:51'!
+agregarOrugas: cantidadDeOrugasAAgregar 
+	cantidadDeOrugasTotales := cantidadDeOrugasTotales  + cantidadDeOrugasAAgregar.! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:48:59'!
-agregarHuevoDeLara
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:56:58'!
+agregarPolillas: cantidadDePolillasAAgregar 
+	cantidadDePolillasTotales := cantidadDePolillasTotales  + cantidadDePolillasAAgregar.! !
+
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:56:34'!
+agregarUnHuevoDeAvispa
+	cantidadDeHuevosDeAvispasTotales  := cantidadDeHuevosDeAvispasTotales  + 1.! !
+
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:53:53'!
+agregarUnHuevoDeLara
+	self agregarUnHuevoDeAvispa.
+	
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara + 1.! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:03:23'!
-agregarHuevoDeOriana
-	self agregarHuevoDeAvispa.
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:46:31'!
+agregarUnHuevoDeOriana
+	self agregarUnHuevoDeAvispa.
 		
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella  := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella  + 1.! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 00:51:01'!
-agregarHuevoDeOrnella
-	self agregarHuevoDeOriana.! !
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:46:39'!
+agregarUnHuevoDeOrnella
+	self agregarUnHuevoDeOriana.! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:03:23'!
-agregarHuevoDePolly
-	self agregarHuevoDeAvispa.
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:46:47'!
+agregarUnHuevoDePolly
+	self agregarUnHuevoDeAvispa.
 		
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  + 1.! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 12:29:20'!
-agregarOrugas: cantidadDeOrugasAAgregar 
-	cantidadDeOrugas := cantidadDeOrugas  + cantidadDeOrugasAAgregar.! !
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:47:43'!
+eliminarUnHuevoConLaFirmaGeneticaDeOrianaYOrnella
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 12:29:26'!
-agregarPolillas: cantidadDePolillasAAgregar 
-	cantidadDePolillas := cantidadDePolillas  + cantidadDePolillasAAgregar.! !
+	^ cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella  - 1! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:48:03'!
-eliminarHuevoDeAvispa
-	cantidadDeHuevosDeAvispas := cantidadDeHuevosDeAvispas  - 1.
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:47:27'!
+eliminarUnHuevoConLaFirmaGeneticaDePolly
+
+	^ cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  - 1! !
+
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:56:34'!
+eliminarUnHuevoDeAvispa
+	cantidadDeHuevosDeAvispasTotales := cantidadDeHuevosDeAvispasTotales  - 1.
 	
-	(cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  > 0) ifTrue:
+	(self hayHuevosConLaFirmaGeneticaDePolly) ifTrue:
 	[
-		cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  - 1.
+		self eliminarUnHuevoConLaFirmaGeneticaDePolly.
 	]
 	ifFalse:
 	[
-		cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella  - 1.
+		self eliminarUnHuevoConLaFirmaGeneticaDeOrianaYOrnella.
 	]
 ! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:04:08'!
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:56:51'!
 eliminarUnaOruga
-	cantidadDeOrugas := cantidadDeOrugas - 1.! !
+	cantidadDeOrugasTotales := cantidadDeOrugasTotales - 1.! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:04:20'!
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:56:58'!
 eliminarUnaPolilla
-	cantidadDePolillas := cantidadDePolillas - 1.! !
+	cantidadDePolillasTotales := cantidadDePolillasTotales - 1.! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:36:54'!
-restablecerHabitat
-	cantidadDeHuevosDeAvispas := 0.
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:47:10'!
+hayHuevosConLaFirmaGeneticaDePolly
+
+	^ cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  > 0! !
+
+!HabitatDeCiudadVespula class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 14:57:15'!
+restablecerElHabitat
+	cantidadDeHuevosDeAvispasTotales := 0.
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella := 0.
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly := 0.
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara := 0.
 	
-	cantidadDeOrugas  := 0.
-	cantidadDePolillas  := 0.! !
+	cantidadDeOrugasTotales  := 0.
+	cantidadDePolillasTotales  := 0.! !
 
 
-!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'JGC 4/22/2022 13:52:05'!
+!HabitatDeCiudadVespula class methodsFor: '--** private fileout/in **--' stamp: 'MS 4/22/2022 14:58:00'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
-	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly := 0.
+	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly := 1.
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella := 0.
-	cantidadDePolillas := 0.
-	cantidadDeOrugas := 0.
-	cantidadDeHuevosDeAvispas := 0.
+	cantidadDePolillasTotales := 1.
+	cantidadDeOrugasTotales := 0.
+	cantidadDeHuevosDeAvispasTotales := 1.
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara := 0.! !
 
 
@@ -140,17 +157,17 @@ DenotativeObject subclass: #OriLaAvi
 OriLaAvi class
 	instanceVariableNames: ''!
 
-!OriLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:04:08'!
+!OriLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 alimentarse
-	HabitatDeAvispas eliminarUnaOruga.! !
+	HabitatDeCiudadVespula eliminarUnaOruga.! !
 
-!OriLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:05:03'!
+!OriLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 hayAlimento
-	^HabitatDeAvispas hayOrugas.! !
+	^HabitatDeCiudadVespula hayOrugas.! !
 
-!OriLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 12:56:46'!
+!OriLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 ponerHuevo
-	HabitatDeAvispas agregarHuevoDeOriana.! !
+	HabitatDeCiudadVespula agregarUnHuevoDeOriana.! !
 
 
 !OriLaAvi class methodsFor: 'comportamiento general' stamp: 'JGC 4/22/2022 12:54:53'!
@@ -177,24 +194,24 @@ OriLaAvi subclass: #LariLaAvi
 LariLaAvi class
 	instanceVariableNames: ''!
 
-!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:46:33'!
+!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 alimentarse
-	HabitatDeAvispas eliminarHuevoDeAvispa.! !
+	HabitatDeCiudadVespula eliminarUnHuevoDeAvispa.! !
 
-!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:42:01'!
+!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 hayAlimento
 	| hayHuevosAjenos |
 	
-	hayHuevosAjenos  := (HabitatDeAvispas cantidadDeHuevosDeAvispas  - HabitatDeAvispas cantidadDeHuevosConLaFirmaGeneticaDeLara) > 0.
+	hayHuevosAjenos  := (HabitatDeCiudadVespula cantidadDeHuevosDeAvispas  - HabitatDeCiudadVespula cantidadDeHuevosConLaFirmaGeneticaDeLara) > 0.
 	
 	^hayHuevosAjenos.
 	
 	
 					 ! !
 
-!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:48:39'!
+!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 ponerHuevo
-	HabitatDeAvispas agregarHuevoDeLara.! !
+	HabitatDeCiudadVespula agregarUnHuevoDeLara.! !
 
 
 !classDefinition: #OrneLaAvi category: 'AvispasYAbejas'!
@@ -210,9 +227,9 @@ OriLaAvi subclass: #OrneLaAvi
 OrneLaAvi class
 	instanceVariableNames: ''!
 
-!OrneLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 12:58:38'!
+!OrneLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 ponerHuevo
-	HabitatDeAvispas  agregarHuevoDeOrnella.! !
+	HabitatDeCiudadVespula  agregarUnHuevoDeOrnella.! !
 
 
 !classDefinition: #PollyLaAvi category: 'AvispasYAbejas'!
@@ -228,17 +245,17 @@ OriLaAvi subclass: #PollyLaAvi
 PollyLaAvi class
 	instanceVariableNames: ''!
 
-!PollyLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:04:20'!
+!PollyLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 alimentarse
-	HabitatDeAvispas eliminarUnaPolilla.! !
+	HabitatDeCiudadVespula eliminarUnaPolilla.! !
 
-!PollyLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:05:13'!
+!PollyLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 hayAlimento
-	^HabitatDeAvispas hayPolillas.! !
+	^HabitatDeCiudadVespula hayPolillas.! !
 
-!PollyLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 12:59:39'!
+!PollyLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/22/2022 14:51:00'!
 ponerHuevo
-	HabitatDeAvispas agregarHuevoDePolly.! !
+	HabitatDeCiudadVespula agregarUnHuevoDePolly.! !
 
 
 !classDefinition: #PruebasReproduccionDeAvispas category: 'AvispasYAbejas'!
@@ -464,9 +481,9 @@ cantidadDeHuevosConLaFirmaGeneticaDeOrnella
 cantidadDeHuevosConLaFirmaGeneticaDePolly
 	^self habitat cantidadDeHuevosConLaFirmaGeneticaDePolly.! !
 
-!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JGC 4/22/2022 12:34:29'!
+!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'MS 4/22/2022 14:51:00'!
 habitat
-	^HabitatDeAvispas.! !
+	^HabitatDeCiudadVespula.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JGC 4/22/2022 00:19:42'!
 hacerQueElHabitatTengaLosRecursosSuficientes
@@ -505,8 +522,8 @@ queElHabitatTengaUnaOrugaMas
 queElHabitatTengaUnaPolillaMas
 	self habitat agregarPolillas: 1.! !
 
-!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JGC 4/21/2022 23:47:39'!
+!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'MS 4/22/2022 14:57:15'!
 retrocederElHabitatAlInicioDeLosTiempos
-	self habitat restablecerHabitat.! !
+	self habitat restablecerElHabitat.! !
 
-HabitatDeAvispas initializeAfterFileIn!
+HabitatDeCiudadVespula initializeAfterFileIn!
