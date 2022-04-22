@@ -11,40 +11,6 @@ DenotativeObject subclass: #HabitatDeAvispas
 HabitatDeAvispas class
 	instanceVariableNames: 'cantidadDeHuevosDeAvispas cantidadDeOrugas cantidadDePolillas cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly'!
 
-!HabitatDeAvispas class methodsFor: 'información' stamp: 'MS 4/21/2022 20:53:48'!
-cantidadDeHuevosConLaFirmaGeneticaDeOrianaYOrnella
-	^cantidadDeHuevosConLaFirmaGeneticaDeOrianaYOrnella.! !
-
-
-!HabitatDeAvispas class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 00:07:39'!
-agregarUnHuevoDeOriYOrne
-	cantidadDeHuevosConLaFirmaGeneticaDeOrianaYOrnella := cantidadDeHuevosConLaFirmaGeneticaDeOrianaYOrnella +1.
-	cantidadDeOrugas := cantidadDeOrugas -1.
-	cantidadDeHuevosDeAvispas := cantidadDeHuevosDeAvispas +1.! !
-
-!HabitatDeAvispas class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 00:09:22'!
-agregarUnHuevoDePolly
-	
-	cantidadDeHuevosConLaFirmaGeneticaDePolly := cantidadDeHuevosConLaFirmaGeneticaDePolly +1.
-	cantidadDeHuevosDeAvispas := cantidadDeHuevosDeAvispas +1.
-	
-	cantidadDePolillas := cantidadDePolillas -1! !
-
-!HabitatDeAvispas class methodsFor: 'modificaciones' stamp: 'MS 4/22/2022 00:06:39'!
-restablecerCantidadDeHuevosDeAvispas
-	cantidadDeHuevosDeAvispas:= 0.
-	cantidadDeHuevosConLaFirmaGeneticaDeOrianaYOrnella := 0.
-	cantidadDeHuevosConLaFirmaGeneticaDePolly := 0.! !
-
-!HabitatDeAvispas class methodsFor: 'modificaciones' stamp: 'MS 4/21/2022 19:53:41'!
-restablecerCantidadDeOrugas
-	cantidadDeOrugas := 0.! !
-
-!HabitatDeAvispas class methodsFor: 'modificaciones' stamp: 'MS 4/21/2022 20:14:27'!
-restablecerCantidadDePolillas
-	cantidadDePolillas := 0.! !
-
-
 !HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 12:44:56'!
 cantidadDeHuevosConLaFirmaGeneticaDeOriana
 	^cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella.
@@ -126,7 +92,7 @@ restablecerHabitat
 	cantidadDePolillas  := 0.! !
 
 
-!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'MS 4/22/2022 13:19:42'!
+!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'JGC 4/22/2022 13:28:10'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -149,7 +115,6 @@ DenotativeObject subclass: #OriLaAvi
 !classDefinition: 'OriLaAvi class' category: 'AvispasYAbejas'!
 OriLaAvi class
 	instanceVariableNames: ''!
-
 
 !OriLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:04:08'!
 alimentarse
@@ -188,11 +153,6 @@ OriLaAvi subclass: #OrneLaAvi
 OrneLaAvi class
 	instanceVariableNames: ''!
 
-!OrneLaAvi class methodsFor: 'comportamiento' stamp: 'MS 4/22/2022 00:08:02'!
-intentarReproducirse
-	HabitatDeAvispas hayOrugas ifTrue: [ HabitatDeAvispas agregarUnHuevoDeOriYOrne ].! !
-
-
 !OrneLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 12:58:38'!
 ponerHuevo
 	HabitatDeAvispas  agregarHuevoDeOrnella.! !
@@ -210,11 +170,6 @@ OriLaAvi subclass: #PollyLaAvi
 !classDefinition: 'PollyLaAvi class' category: 'AvispasYAbejas'!
 PollyLaAvi class
 	instanceVariableNames: ''!
-
-!PollyLaAvi class methodsFor: 'comportamiento' stamp: 'MS 4/22/2022 00:09:42'!
-intentarReproducirse
-	HabitatDeAvispas hayPolillas ifTrue: [ HabitatDeAvispas agregarUnHuevoDePolly ].! !
-
 
 !PollyLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:04:20'!
 alimentarse
@@ -438,7 +393,7 @@ test21CuandoLaraLaAvispaNoTieneRecursosNoDejaUnHuevo
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:52'!
 cantidadDeHuevosConLaFirmaGeneticaDeLara
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaci?n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JGC 4/22/2022 00:51:18'!
 cantidadDeHuevosConLaFirmaGeneticaDeOriana
@@ -463,7 +418,7 @@ hacerQueElHabitatTengaLosRecursosSuficientes
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:28'!
 laAvispaLara
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	Assert isTrue: false description: 'Reemplazar esto por la implementaci?n correspondiente'.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JGC 4/22/2022 12:34:37'!
 laAvispaOriana
