@@ -9,7 +9,11 @@ DenotativeObject subclass: #HabitatDeAvispas
 
 !classDefinition: 'HabitatDeAvispas class' category: 'AvispasYAbejas'!
 HabitatDeAvispas class
-	instanceVariableNames: 'cantidadDeHuevosDeAvispas cantidadDeOrugas cantidadDePolillas cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly'!
+	instanceVariableNames: 'cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella cantidadDePolillas cantidadDeOrugas cantidadDeHuevosDeAvispas cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara'!
+
+!HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 13:36:23'!
+cantidadDeHuevosConLaFirmaGeneticaDeLara
+	^cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara.! !
 
 !HabitatDeAvispas class methodsFor: 'informacion' stamp: 'JGC 4/22/2022 12:44:56'!
 cantidadDeHuevosConLaFirmaGeneticaDeOriana
@@ -50,6 +54,10 @@ hayPolillas
 agregarHuevoDeAvispa
 	cantidadDeHuevosDeAvispas  := cantidadDeHuevosDeAvispas  + 1.! !
 
+!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:48:59'!
+agregarHuevoDeLara
+	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara + 1.! !
+
 !HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:03:23'!
 agregarHuevoDeOriana
 	self agregarHuevoDeAvispa.
@@ -74,6 +82,20 @@ agregarOrugas: cantidadDeOrugasAAgregar
 agregarPolillas: cantidadDePolillasAAgregar 
 	cantidadDePolillas := cantidadDePolillas  + cantidadDePolillasAAgregar.! !
 
+!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:48:03'!
+eliminarHuevoDeAvispa
+	cantidadDeHuevosDeAvispas := cantidadDeHuevosDeAvispas  - 1.
+	
+	(cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  > 0) ifTrue:
+	[
+		cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly  - 1.
+	]
+	ifFalse:
+	[
+		cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella := cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella  - 1.
+	]
+! !
+
 !HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:04:08'!
 eliminarUnaOruga
 	cantidadDeOrugas := cantidadDeOrugas - 1.! !
@@ -82,25 +104,27 @@ eliminarUnaOruga
 eliminarUnaPolilla
 	cantidadDePolillas := cantidadDePolillas - 1.! !
 
-!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 12:49:05'!
+!HabitatDeAvispas class methodsFor: 'modificacion' stamp: 'JGC 4/22/2022 13:36:54'!
 restablecerHabitat
 	cantidadDeHuevosDeAvispas := 0.
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella := 0.
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly := 0.
+	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara := 0.
 	
 	cantidadDeOrugas  := 0.
 	cantidadDePolillas  := 0.! !
 
 
-!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'JGC 4/22/2022 13:28:10'!
+!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'JGC 4/22/2022 13:52:05'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
-	cantidadDeHuevosDeAvispas := 0.
-	cantidadDeOrugas := 0.
-	cantidadDePolillas := 0.
+	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly := 0.
 	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeOrianaYOrnella := 0.
-	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDePolly := 0.! !
+	cantidadDePolillas := 0.
+	cantidadDeOrugas := 0.
+	cantidadDeHuevosDeAvispas := 0.
+	cantidadDeHuevosDeAvispasConLaFirmaGeneticaDeLara := 0.! !
 
 
 !classDefinition: #OriLaAvi category: 'AvispasYAbejas'!
@@ -138,6 +162,39 @@ intentarReproducirse
 	]
 
 	! !
+
+
+!classDefinition: #LariLaAvi category: 'AvispasYAbejas'!
+OriLaAvi subclass: #LariLaAvi
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'AvispasYAbejas'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'LariLaAvi class' category: 'AvispasYAbejas'!
+LariLaAvi class
+	instanceVariableNames: ''!
+
+!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:46:33'!
+alimentarse
+	HabitatDeAvispas eliminarHuevoDeAvispa.! !
+
+!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:42:01'!
+hayAlimento
+	| hayHuevosAjenos |
+	
+	hayHuevosAjenos  := (HabitatDeAvispas cantidadDeHuevosDeAvispas  - HabitatDeAvispas cantidadDeHuevosConLaFirmaGeneticaDeLara) > 0.
+	
+	^hayHuevosAjenos.
+	
+	
+					 ! !
+
+!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 13:48:39'!
+ponerHuevo
+	HabitatDeAvispas agregarHuevoDeLara.! !
 
 
 !classDefinition: #OrneLaAvi category: 'AvispasYAbejas'!
@@ -391,9 +448,9 @@ test21CuandoLaraLaAvispaNoTieneRecursosNoDejaUnHuevo
 	Assert that: self cantidadDeHuevosConLaFirmaGeneticaDeLara isEqualTo: 0.! !
 
 
-!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:52'!
+!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JGC 4/22/2022 13:49:37'!
 cantidadDeHuevosConLaFirmaGeneticaDeLara
-	Assert isTrue: false description: 'Reemplazar esto por la implementaci?n correspondiente'.! !
+	^self habitat cantidadDeHuevosConLaFirmaGeneticaDeLara.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JGC 4/22/2022 00:51:18'!
 cantidadDeHuevosConLaFirmaGeneticaDeOriana
@@ -416,9 +473,9 @@ hacerQueElHabitatTengaLosRecursosSuficientes
 	self habitat agregarOrugas: 2.
 	self habitat agregarPolillas: 1.! !
 
-!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:14:28'!
+!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JGC 4/22/2022 13:35:35'!
 laAvispaLara
-	Assert isTrue: false description: 'Reemplazar esto por la implementaci?n correspondiente'.! !
+	^LariLaAvi.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JGC 4/22/2022 12:34:37'!
 laAvispaOriana
