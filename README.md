@@ -1,6 +1,4 @@
-# Algo3EjerciciosPracticos
-
-Preguntas teóricas Ejercicio 1
+# Preguntas teóricas Ejercicio 1
 
 ## Sobre implementar funcionalidad
 Al comienzo decidimos ir pasando las pruebas de a una; primero la 01, luego la 02 y por último la 03. De esta forma, nos quedaron mensajes incompletos pero que cumplían lo pedido por las pruebas. A medida que fuimos avanzando nos surgió la necesidad de resolver los problemas de antemano e ir completando mensajes. Por lo tanto, cuando implementamos a la última avispa (Lara), todas las pruebas pasaron de una. 
