@@ -1,15 +1,6 @@
 # Algo3EjerciciosPracticos
 
-holaa :)
-
-hola \\\o.o//
-
-nos leeran?
-
-----
 Preguntas teóricas Ejercicio 1
-
-Los diccionarios no nos simplificaron el trabajo, lo único que aportaron fue tener un solo colaborador en vez de 3.(firmas genéticas)
 
 ## Sobre implementar funcionalidad
 Al comienzo decidimos ir pasando las pruebas de a una; primero la 01, luego la 02 y por último la 03. De esta forma, nos quedaron mensajes incompletos pero que cumplían lo pedido por las pruebas. A medida que fuimos avanzando nos surgió la necesidad de resolver los problemas de antemano e ir completando mensajes. Por lo tanto, cuando implementamos a la última avispa (Lara), todas las pruebas pasaron de una. 
