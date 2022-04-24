@@ -99,13 +99,13 @@ retrocederElHabitatAlInicioDeLosTiempos
 	cantidadDePolillas  := 0.! !
 
 
-!HabitatDeCiudadVespula class methodsFor: '--** private fileout/in **--' stamp: 'JGC 4/23/2022 13:29:11'!
+!HabitatDeCiudadVespula class methodsFor: '--** private fileout/in **--' stamp: 'MS 4/24/2022 20:08:16'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
 	cantidadDeOrugas := 0.
-	cantidadDePolillas := 0.
-	cantidadDeHuevosDeAvispaSegunMadre := ((Dictionary new) add: (LariLaAvi->0); add: (OriLaAvi->0); add: (OrneLaAvi->0); add: (PollyLaAvi->0); yourself).! !
+	cantidadDePolillas := 1.
+	cantidadDeHuevosDeAvispaSegunMadre := ((Dictionary new) add: (LariLaAvi->0); add: (OriLaAvi->0); add: (OrneLaAvi->0); add: (PollyLaAvi->1); yourself).! !
 
 
 !classDefinition: #OriLaAvi category: 'AvispasYAbejas'!
@@ -162,9 +162,9 @@ LariLaAvi class
 hayAlimento
 	^(HabitatDeCiudadVespula cantidadDeHuevosDeAvispas - HabitatDeCiudadVespula cantidadDeHuevosConLaFirmaGeneticaDeLara) > 0.! !
 
-!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/23/2022 13:22:52'!
+!LariLaAvi class methodsFor: 'comportamiento interno' stamp: 'MS 4/24/2022 20:00:32'!
 reservarAlimento
-	HabitatDeCiudadVespula quitarUnHuevoDeAvispa: HabitatDeCiudadVespula avispaConNidoDiponibleParaRobar.! !
+	HabitatDeCiudadVespula quitarUnHuevoDeAvispa: (HabitatDeCiudadVespula avispaConNidoDiponibleParaRobar).! !
 
 
 !classDefinition: #OrneLaAvi category: 'AvispasYAbejas'!
@@ -180,7 +180,7 @@ OriLaAvi subclass: #OrneLaAvi
 OrneLaAvi class
 	instanceVariableNames: ''!
 
-!OrneLaAvi class methodsFor: 'comportamiento interno' stamp: 'JGC 4/22/2022 21:07:37'!
+!OrneLaAvi class methodsFor: 'comportamiento general' stamp: 'JGC 4/22/2022 21:07:37'!
 saludar
 	^'Holaa!! Soy Orne la Avi. \\(O-O)//'.! !
 
