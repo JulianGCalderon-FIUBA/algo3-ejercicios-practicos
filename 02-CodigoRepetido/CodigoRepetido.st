@@ -1,25 +1,25 @@
-!classDefinition: #CantSuspend category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: #CantSuspend category: 'CodigoRepetido'!
 Error subclass: #CantSuspend
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'CodigoRepetido-Ejercicio'!
+	category: 'CodigoRepetido'!
 
 
-!classDefinition: #NotFound category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: #NotFound category: 'CodigoRepetido'!
 Error subclass: #NotFound
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'CodigoRepetido-Ejercicio'!
+	category: 'CodigoRepetido'!
 
 
-!classDefinition: #CustomerBookTest category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: #CustomerBookTest category: 'CodigoRepetido'!
 TestCase subclass: #CustomerBookTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'CodigoRepetido-Ejercicio'!
+	category: 'CodigoRepetido'!
 
 !CustomerBookTest methodsFor: 'private' stamp: 'MS 4/30/2022 19:46:28'!
 auxTest01ThereIsOnlyACustomerNamed: aName in: aCustomerBook
@@ -190,12 +190,12 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 ! !
 
 
-!classDefinition: #CustomerBook category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: #CustomerBook category: 'CodigoRepetido'!
 Object subclass: #CustomerBook
 	instanceVariableNames: 'suspended active'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'CodigoRepetido-Ejercicio'!
+	category: 'CodigoRepetido'!
 
 !CustomerBook methodsFor: 'testing' stamp: 'MS 4/30/2022 19:32:48'!
 includesCustomerNamed: aName
@@ -290,7 +290,7 @@ suspendCustomerNamed: aName
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'CustomerBook class' category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: 'CustomerBook class' category: 'CodigoRepetido'!
 CustomerBook class
 	instanceVariableNames: ''!
 
