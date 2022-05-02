@@ -34,7 +34,7 @@ test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 	self assert: millisecondsItTook < (50 * millisecond).
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'MS 5/1/2022 22:11:04'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'MS 5/1/2022 23:50:12'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
 	| customerBook millisecondsItTook paulMcCartney |
