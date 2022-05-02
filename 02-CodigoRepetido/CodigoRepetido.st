@@ -34,15 +34,15 @@ test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 	self assert: millisecondsItTook < (50 * millisecond).
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'JGC 5/1/2022 20:22:16'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'MS 5/1/2022 22:11:04'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
 	| customerBook millisecondsItTook paulMcCartney |
 	
 	paulMcCartney := 'Paul McCartney'.
-	customerBook := CustomerBook new.
+	customerBook := self createCustomerBookWithCustomer: paulMcCartney.
 	
-	millisecondsItTook := self millisecondsItTakesTo: [ customerBook addCustomerNamed: paulMcCartney ].
+	millisecondsItTook := self millisecondsItTakesTo: [ customerBook removeCustomerNamed: paulMcCartney ].
 	
 	self assert: millisecondsItTook < (100 * millisecond).
 ! !
