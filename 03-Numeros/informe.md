@@ -21,3 +21,10 @@ Este método sirve para indicar que puede haber diferencias en la resolución de
 ## No rompas
 
 Romper encapsulamiento implica que si se quieren realizar cambios en la funcionalidad de aquello que se quiere modelar será necesario buscar todos los lugares donde aparece lo modelado y modificarlo. Esto genera errores y confusiones, por lo que lo mejor es siempre mantener lo que tiene la misma funcionalidad agrupado, y si se sigue una lógica para resolver los problemas mantenerla.
+
+## Detalles de implementación
+
+Para resolver los if dentro de with: over: de la clase Fraccion tuvimos que recurrir al double dispatch de una forma extraña. Notamos que había dos objetos polimórficos como colaboradores del método, por lo que para poder aplicar el double dispatch como lo solemos hacer tuvimos que crear un método nuevo que tenga a alguno de ellos como objeto principal (self) y al otro como colaborador.
+
+Por otro lado, para resolver los if de fibonacci tuvimos que dejar algunos if en el mensaje with: de la clase Entero para poder instanciar las nuevas subclases (negativo, cero, positivo, uno). No pudimos resolverlo como en el caso anterior pues el colaborador aValue es del tipo Integer y no podemos modificar su protocolo.
+
