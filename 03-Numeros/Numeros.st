@@ -562,13 +562,13 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'.! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'MS 5/8/2022 16:58:48'!
+!Entero class methodsFor: 'instance creation' stamp: 'MS 5/9/2022 14:18:24'!
 with: aValue 
 	
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
 	
-	aValue = 0 ifTrue: [ ^Cero new initializeWith: aValue].
-	aValue  = 1 ifTrue: [ ^Uno new initializeWith: aValue].
+	aValue = 0 ifTrue: [ ^Cero new initialize].
+	aValue  = 1 ifTrue: [ ^Uno new initialize].
 	aValue > 0 ifTrue: [ ^Positivo new initializeWith: aValue].
 	aValue < 0 ifTrue: [ ^Negativo new initializeWith: aValue].! !
 
@@ -594,6 +594,12 @@ createFraccionWithSelfUnder: aDividend
 !Cero methodsFor: 'arithmetic operations' stamp: 'MS 5/8/2022 15:50:37'!
 fibonacci
 	^Entero with: 1.! !
+
+
+!Cero methodsFor: 'initialization' stamp: 'MS 5/9/2022 14:19:18'!
+initialize 
+
+	value := 0.! !
 
 
 !classDefinition: #Negativo category: 'Numeros'!
@@ -647,6 +653,12 @@ Positivo subclass: #Uno
 fibonacci
 
 	^self.! !
+
+
+!Uno methodsFor: 'initialization' stamp: 'MS 5/9/2022 14:19:24'!
+initialize
+	
+	value := 1.! !
 
 
 !classDefinition: #Fraccion category: 'Numeros'!
