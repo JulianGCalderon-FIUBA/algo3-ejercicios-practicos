@@ -139,10 +139,112 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack'!
 TestCase subclass: #SentenceFinderByPrefixTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'stack sentenceFinder'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack'!
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:05:09'!
+test01CanNotFindSentenceWithEmptyPrefix
+
+	| prefix |
+	prefix := ''.
+
+	self should: [ sentenceFinder find: prefix ] 
+	raise: Error 
+	withExceptionDo: 
+		[:anError | self assert: SentenceFinderByPrefix prefixIsNotValidErrorDescription equals: anError messageText].
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:05:54'!
+test02CanNotFindSentenceWithPrefixWithSpaces
+
+	| prefix |
+	prefix := 'hola ori'.
+
+	self should: [ sentenceFinder find: prefix ] 
+	raise: Error 
+	withExceptionDo: 
+		[:anError | self assert: SentenceFinderByPrefix prefixIsNotValidErrorDescription equals: anError messageText].
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:16:05'!
+test03CanFindSentencesWithUndercasePrefix
+
+	| prefix sentences |
+	
+	prefix := 'abc'.
+	sentences := OrderedCollection new.
+	sentences add: 'abcxyz'.
+	sentences add: 'abcdef'.
+	
+	self assert: sentences equals: (sentenceFinder find: prefix).
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:17:07'!
+test04CanFindSentencesWithUppercasePrefix
+
+	| prefix sentences |
+	
+	prefix := 'ABC'.
+	sentences := OrderedCollection new.
+	sentences add: 'ABCxyz'.
+	sentences add: 'ABCdef'.
+	
+	self assert: sentences equals: (sentenceFinder find: prefix).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:18:53'!
+test05CanFindSentencesWithMixedcasePrefix
+
+	| prefix sentences |
+	
+	prefix := 'AbC'.
+	sentences := OrderedCollection new.
+	sentences add: 'AbCxyz'.
+	sentences add: 'AbCdef'.
+	
+	self assert: sentences equals: (sentenceFinder find: prefix).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:25:31'!
+test06SentenceWithPrefixNotAtBeginningIsNotIncluded
+
+	| prefix sentence |
+	
+	prefix := 'abc'.
+	sentence := 'holaabcchau'.
+	
+	self assert: ((sentenceFinder find: prefix) includes: sentence) not.! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:29:43'!
+test07OriginalStackIsNotModifiedAfterFindingSentences
+
+	| prefix originalSize |
+	
+	prefix := 'abc'.
+	originalSize := stack size.
+	sentenceFinder find: prefix.
+	
+	self assert: originalSize equals: stack size. ! !
+
+
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'MS 5/15/2022 19:18:42'!
+setUp
+	
+	stack := OOStack new.
+	stack push: 'abcdef'.
+	stack push: 'abcxyz'.
+	
+	stack push: 'ABCdef'.
+	stack push: 'ABCxyz'	.
+	
+	stack push: 'AbCdef'.
+	stack push: 'AbCxyz'.
+	
+	stack push: 'holaabcchau'.
+	sentenceFinder := SentenceFinderByPrefix new with: stack.
+	
+	! !
 
 
 !classDefinition: #OOStack category: 'Stack'!
@@ -234,7 +336,6 @@ removeLastElement
 OOStack class
 	instanceVariableNames: ''!
 
-
 !OOStack class methodsFor: 'error descriptions' stamp: 'JGC 5/15/2022 17:45:33'!
 stackCorrespondsToNoStateErrorDescription
 
@@ -248,10 +349,79 @@ stackEmptyErrorDescription
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack'!
 Object subclass: #SentenceFinderByPrefix
-	instanceVariableNames: ''
+	instanceVariableNames: 'stack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack'!
+
+!SentenceFinderByPrefix methodsFor: 'find' stamp: 'MS 5/15/2022 18:49:03'!
+find: prefix
+
+	(self isPrefixValid: prefix) 
+	ifFalse: 
+	[self prefixIsNotValid ]
+	ifTrue: 
+	[^self listOfStringsWithPrefix: prefix].! !
+
+
+!SentenceFinderByPrefix methodsFor: 'error' stamp: 'MS 5/15/2022 18:48:22'!
+prefixIsNotValid
+
+	^ SentenceFinderByPrefix error: SentenceFinderByPrefix prefixIsNotValidErrorDescription! !
+
+
+!SentenceFinderByPrefix methodsFor: 'initialize' stamp: 'MS 5/15/2022 19:04:33'!
+with: anOOStack 
+	stack := anOOStack.! !
+
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'MS 5/15/2022 19:37:04'!
+if: sentence startsWithPrefix: prefix addTo: list
+
+	(sentence findString: prefix) = 1 
+	ifTrue: 
+	[ list add: sentence ].! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'MS 5/15/2022 19:37:58'!
+listOfStringsWithPrefix: prefix
+
+	| listOfSentenceswithPrefix  listOfAllSentences|
+	
+	listOfSentenceswithPrefix := OrderedCollection new.
+	listOfAllSentences := OrderedCollection new.
+	
+	[ stack isEmpty not ] 
+	whileTrue: 
+	[ |sentence|
+		sentence := stack pop.
+		listOfAllSentences add: sentence.
+		self if: sentence startsWithPrefix: prefix addTo: listOfSentenceswithPrefix ].
+	
+	self refillStackWith: listOfAllSentences.
+	
+	^listOfSentenceswithPrefix.! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'MS 5/15/2022 19:40:49'!
+refillStackWith: list
+
+	list reversed do: [:element | stack push: element ].! !
+
+
+!SentenceFinderByPrefix methodsFor: 'testing' stamp: 'MS 5/15/2022 18:08:43'!
+isPrefixValid: prefix
+
+	^((prefix includesSubString: ' ') or: (prefix = '')) not. ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SentenceFinderByPrefix class' category: 'Stack'!
+SentenceFinderByPrefix class
+	instanceVariableNames: ''!
+
+!SentenceFinderByPrefix class methodsFor: 'error description' stamp: 'MS 5/15/2022 18:02:20'!
+prefixIsNotValidErrorDescription
+
+	^'Prefix is not valid'.! !
 
 
 !classDefinition: #StackStates category: 'Stack'!
