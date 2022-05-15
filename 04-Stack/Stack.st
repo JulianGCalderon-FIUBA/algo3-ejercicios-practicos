@@ -157,10 +157,10 @@ size
 	
 	^elements size.! !
 
-!OOStack methodsFor: 'accessing' stamp: 'ms 5/12/2022 21:19:35'!
+!OOStack methodsFor: 'accessing' stamp: 'JGC 5/15/2022 17:40:24'!
 top
 	
-	^self sendMessageToCorrespondingClass: #top:.! !
+	^self correspondingStateInstance top: self.! !
 
 
 !OOStack methodsFor: 'initialization' stamp: 'JGC 5/11/2022 14:56:47'!
@@ -169,10 +169,12 @@ initialize
 	elements := OrderedCollection new.! !
 
 
-!OOStack methodsFor: 'operations' stamp: 'ms 5/12/2022 21:19:35'!
+!OOStack methodsFor: 'operations' stamp: 'JGC 5/15/2022 17:40:15'!
 pop
-
-	^self sendMessageToCorrespondingClass: #pop:.! !
+	
+	^self correspondingStateInstance pop: self.
+	
+! !
 
 !OOStack methodsFor: 'operations' stamp: 'JGC 5/11/2022 14:34:21'!
 push: aString
@@ -186,35 +188,45 @@ isEmpty
 	^self size = 0.! !
 
 
-!OOStack methodsFor: 'private' stamp: 'ms 5/12/2022 20:25:14'!
-popWhenEmpty
+!OOStack methodsFor: 'private' stamp: 'JGC 5/15/2022 17:45:19'!
+correspondingStateInstance
 	
-	OOStack error: OOStack stackEmptyErrorDescription.! !
+	StackStates subclasses 
+		detect: [:state | state stackCorrespondsWithState: self ] 
+		ifFound: [:state | ^state new] 
+		ifNone: [OOStack error: OOStack stackCorrespondsToNoStateErrorDescription ].! !
 
-!OOStack methodsFor: 'private' stamp: 'ms 5/12/2022 20:20:48'!
-popWhenNotEmpty
 
-	^elements removeLast.! !
+!OOStack methodsFor: 'accessing - private' stamp: 'JGC 5/13/2022 15:59:48'!
+lastElement
 
-!OOStack methodsFor: 'private' stamp: 'ms 5/12/2022 21:24:06'!
-sendMessageToCorrespondingClass: message
-	
-	OOStack subclasses 
-		detect: [:subclass | subclass stackCorrespondsWithClass: self ] 
-		ifFound: [:subclass | ^message sendTo: subclass new with: self] 
-		ifNone: [OOStack error: OOStack stackCorrespondsToNoClassErrorDescription ].! !
+	^elements at: elements size.! !
 
-!OOStack methodsFor: 'private' stamp: 'ms 5/12/2022 20:23:30'!
+!OOStack methodsFor: 'accessing - private' stamp: 'JGC 5/14/2022 11:44:42'!
 topWhenEmpty
 
-	OOStack error: OOStack stackEmptyErrorDescription.
-! !
+	OOStack error: OOStack stackEmptyErrorDescription.! !
 
-!OOStack methodsFor: 'private' stamp: 'ms 5/12/2022 20:29:04'!
+!OOStack methodsFor: 'accessing - private' stamp: 'JGC 5/14/2022 11:44:13'!
 topWhenNotEmpty
 
-	^elements at: self size.
-! !
+	^self lastElement.! !
+
+
+!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/14/2022 11:44:51'!
+popWhenEmpty
+
+	OOStack error: OOStack stackEmptyErrorDescription.! !
+
+!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/14/2022 11:44:58'!
+popWhenNotEmpty
+
+	^self removeLastElement.! !
+
+!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/13/2022 15:55:54'!
+removeLastElement
+	
+	^elements removeLast.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -222,88 +234,16 @@ topWhenNotEmpty
 OOStack class
 	instanceVariableNames: ''!
 
-!OOStack class methodsFor: 'testing' stamp: 'ms 5/12/2022 21:25:10'!
-stackCorrespondsWithClass: stack
-	
-	self subclassResponsibility.! !
 
+!OOStack class methodsFor: 'error descriptions' stamp: 'JGC 5/15/2022 17:45:33'!
+stackCorrespondsToNoStateErrorDescription
 
-!OOStack class methodsFor: 'error descriptions' stamp: 'ms 5/12/2022 21:12:56'!
-stackCorrespondsToNoClassErrorDescription
-
-	^ 'Stack does not have a corresponding class'.! !
+	^ 'Stack does not have a corresponding state'.! !
 
 !OOStack class methodsFor: 'error descriptions' stamp: 'HernanWilkinson 5/7/2012 11:51'!
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
-
-
-!classDefinition: #EmptyStack category: 'Stack'!
-OOStack subclass: #EmptyStack
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack'!
-
-!EmptyStack methodsFor: 'operations' stamp: 'ms 5/12/2022 20:24:53'!
-pop: stack
-
-	 ^stack popWhenEmpty.
-
-	! !
-
-
-!EmptyStack methodsFor: 'accessing' stamp: 'ms 5/12/2022 20:23:08'!
-top: stack
-
-	^stack topWhenEmpty.
-
-	! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'EmptyStack class' category: 'Stack'!
-EmptyStack class
-	instanceVariableNames: ''!
-
-!EmptyStack class methodsFor: 'testing' stamp: 'ms 5/12/2022 21:23:26'!
-stackCorrespondsWithClass: stack
-
-	^stack isEmpty.! !
-
-
-!classDefinition: #NotEmptyStack category: 'Stack'!
-OOStack subclass: #NotEmptyStack
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack'!
-
-!NotEmptyStack methodsFor: 'operations' stamp: 'ms 5/12/2022 20:21:11'!
-pop: stack
-
-	^stack popWhenNotEmpty.! !
-
-
-!NotEmptyStack methodsFor: 'accessing' stamp: 'ms 5/12/2022 20:26:03'!
-top: stack
-
-	^stack topWhenNotEmpty.! !
-
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'NotEmptyStack class' category: 'Stack'!
-NotEmptyStack class
-	instanceVariableNames: ''!
-
-!NotEmptyStack class methodsFor: 'testing' stamp: 'ms 5/12/2022 21:24:27'!
-stackCorrespondsWithClass: stack
-
-	^stack isEmpty not.
-
-	! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack'!
@@ -312,3 +252,99 @@ Object subclass: #SentenceFinderByPrefix
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack'!
+
+
+!classDefinition: #StackStates category: 'Stack'!
+Object subclass: #StackStates
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack'!
+
+!StackStates methodsFor: 'accessing' stamp: 'JGC 5/14/2022 11:39:45'!
+top: stack
+
+	self subclassResponsibility.! !
+
+
+!StackStates methodsFor: 'operations' stamp: 'JGC 5/14/2022 11:39:40'!
+pop: stack
+
+	self subclassResponsibility.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'StackStates class' category: 'Stack'!
+StackStates class
+	instanceVariableNames: ''!
+
+!StackStates class methodsFor: 'testing' stamp: 'JGC 5/14/2022 11:53:47'!
+stackCorrespondsWithState: stack
+
+	self subclassResponsibility.! !
+
+
+!classDefinition: #Empty category: 'Stack'!
+StackStates subclass: #Empty
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack'!
+
+!Empty methodsFor: 'operations' stamp: 'JGC 5/14/2022 11:51:58'!
+pop: stack
+
+	^stack popWhenEmpty.
+	! !
+
+
+!Empty methodsFor: 'accessing' stamp: 'JGC 5/14/2022 11:51:54'!
+top: stack
+
+	^stack topWhenEmpty.
+
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Empty class' category: 'Stack'!
+Empty class
+	instanceVariableNames: ''!
+
+!Empty class methodsFor: 'testing' stamp: 'JGC 5/14/2022 11:54:36'!
+stackCorrespondsWithState: stack
+
+	^stack isEmpty.! !
+
+
+!classDefinition: #NotEmpty category: 'Stack'!
+StackStates subclass: #NotEmpty
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack'!
+
+!NotEmpty methodsFor: 'operations' stamp: 'JGC 5/14/2022 11:51:47'!
+pop: stack
+
+	^stack popWhenNotEmpty.
+	! !
+
+
+!NotEmpty methodsFor: 'accessing' stamp: 'JGC 5/14/2022 11:51:50'!
+top: stack
+
+	^stack topWhenNotEmpty.
+
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'NotEmpty class' category: 'Stack'!
+NotEmpty class
+	instanceVariableNames: ''!
+
+!NotEmpty class methodsFor: 'testing' stamp: 'JGC 5/14/2022 11:54:52'!
+stackCorrespondsWithState: stack
+
+	^stack isEmpty not.! !
