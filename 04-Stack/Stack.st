@@ -1,6 +1,6 @@
 !classDefinition: #OOStackTest category: 'Stack'!
 TestCase subclass: #OOStackTest
-	instanceVariableNames: 'stack pushedObject firstPushedObject secondPushedObject limitedStack thirdPushedObject'
+	instanceVariableNames: 'stack pushedObject firstPushedObject secondPushedObject thirdPushedObject limitedStack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack'!
@@ -307,10 +307,10 @@ pop
 	
 ! !
 
-!OOStack methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:29:37'!
+!OOStack methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:51:23'!
 push: anObjectToBePushed
 
-	self subclassResponsibility.! !
+	self correspondingStateInstance push: anObjectToBePushed in: self.! !
 
 
 !OOStack methodsFor: 'testing' stamp: 'JGC 5/11/2022 13:48:53'!
@@ -318,25 +318,36 @@ isEmpty
 
 	^self size = 0.! !
 
+!OOStack methodsFor: 'testing' stamp: 'JGC 5/16/2022 11:55:11'!
+isFull
 
-!OOStack methodsFor: 'state detecting' stamp: 'JGC 5/15/2022 20:22:09'!
+	self subclassResponsibility.! !
+
+
+!OOStack methodsFor: 'state detecting' stamp: 'JGC 5/16/2022 12:19:33'!
 correspondingStateInstance
 	
 	StackStates subclasses 
 		detect: [ :state | state stackCorrespondsWithState: self ] 
-		ifFound: [ :state | ^state new] 
+		ifFound: [ :state | ^state new ] 
 		ifNone: [ OOStack error: OOStack stackCorrespondsToNoStateErrorDescription ].! !
 
 
-!OOStack methodsFor: 'accessing - private' stamp: 'JGC 5/13/2022 15:59:48'!
+!OOStack methodsFor: 'private' stamp: 'JGC 5/13/2022 15:59:48'!
 lastElement
 
 	^elements at: elements size.! !
+
 
 !OOStack methodsFor: 'accessing - private' stamp: 'JGC 5/14/2022 11:44:42'!
 topWhenEmpty
 
 	OOStack error: OOStack stackEmptyErrorDescription.! !
+
+!OOStack methodsFor: 'accessing - private' stamp: 'JGC 5/16/2022 12:02:25'!
+topWhenFull
+
+	^self topWhenNotEmpty.! !
 
 !OOStack methodsFor: 'accessing - private' stamp: 'JGC 5/14/2022 11:44:13'!
 topWhenNotEmpty
@@ -349,20 +360,30 @@ popWhenEmpty
 
 	OOStack error: OOStack stackEmptyErrorDescription.! !
 
-!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/14/2022 11:44:58'!
+!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/16/2022 11:46:53'!
+popWhenFull
+
+	^self popWhenNotEmpty.! !
+
+!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/16/2022 12:03:02'!
 popWhenNotEmpty
 
-	^self removeLastElement.! !
-
-!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/16/2022 11:29:45'!
-pushWhenNotFull: anObjectToBePushed
-	
-	elements add: anObjectToBePushed.! !
-
-!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/13/2022 15:55:54'!
-removeLastElement
-	
 	^elements removeLast.! !
+
+!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/16/2022 11:50:07'!
+pushWhenEmpty: anObjectToBePushed
+	
+	self pushWhenNotEmpty: anObjectToBePushed.! !
+
+!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/16/2022 11:50:34'!
+pushWhenFull: anObjectToBePushed
+	
+	LimitedStack error: LimitedStack stackFullErrorDescription.! !
+
+!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/16/2022 11:49:59'!
+pushWhenNotEmpty: anObjectToBePushed
+		
+	elements add: anObjectToBePushed.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -388,27 +409,22 @@ OOStack subclass: #LimitedStack
 	poolDictionaries: ''
 	category: 'Stack'!
 
+!LimitedStack methodsFor: 'initialization' stamp: 'JGC 5/16/2022 12:23:34'!
+initialize
+	super initialize.
+	
+	limit := LimitedStack defaultLimit.! !
+
 !LimitedStack methodsFor: 'initialization' stamp: 'JGC 5/16/2022 11:08:53'!
 with: aLimit
 	
 	limit := aLimit.! !
 
 
-!LimitedStack methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:30:26'!
-push: anObjectToBePushed
+!LimitedStack methodsFor: 'testing' stamp: 'JGC 5/16/2022 11:55:44'!
+isFull
 	
-	(elements size = limit) ifTrue:
-	[
-		self pushWhenFull: anObjectToBePushed.
-	].
-
-	self pushWhenNotFull: anObjectToBePushed.! !
-
-
-!LimitedStack methodsFor: 'operations - private' stamp: 'JGC 5/16/2022 11:29:22'!
-pushWhenFull: anObjectToBePushed
-
-	LimitedStack error: LimitedStack stackFullErrorDescription.! !
+	^self size = limit.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -419,6 +435,12 @@ LimitedStack class
 !LimitedStack class methodsFor: 'instance creation' stamp: 'JGC 5/16/2022 11:07:41'!
 newWithLimit: limit
 	^LimitedStack new with: limit.! !
+
+
+!LimitedStack class methodsFor: 'constants' stamp: 'JGC 5/16/2022 12:23:18'!
+defaultLimit
+	
+	^10.! !
 
 
 !LimitedStack class methodsFor: 'error descriptions' stamp: 'JGC 5/16/2022 11:19:01'!
@@ -434,10 +456,10 @@ OOStack subclass: #UnlimitedStack
 	poolDictionaries: ''
 	category: 'Stack'!
 
-!UnlimitedStack methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:30:33'!
-push: anObjectToBePushed
+!UnlimitedStack methodsFor: 'testing' stamp: 'JGC 5/16/2022 11:55:52'!
+isFull
 
-	self pushWhenNotFull: anObjectToBePushed.! !
+	^false.! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack'!
@@ -506,13 +528,11 @@ createOrderedCollectionFromStack
 	
 	"\\(O.O)//"! !
 
-!SentenceFinderByPrefix methodsFor: 'private' stamp: 'JGC 5/15/2022 22:37:10'!
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'JGC 5/16/2022 12:32:44'!
 emptyStackIn: anOrderedCollection
 
 	^[stack isEmpty not] whileTrue: 
-	[
-		anOrderedCollection add: stack pop
-	].! !
+		[anOrderedCollection add: stack pop].! !
 
 !SentenceFinderByPrefix methodsFor: 'private' stamp: 'JGC 5/15/2022 22:37:52'!
 refillStackWith: anOrderedCollection
@@ -559,6 +579,11 @@ pop: stack
 
 	self subclassResponsibility.! !
 
+!StackStates methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:54:02'!
+push: anObjectToBePushed in: aStack
+
+	self subclassResponsibility.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'StackStates class' category: 'Stack'!
@@ -584,6 +609,11 @@ pop: stack
 	^stack popWhenEmpty.
 	! !
 
+!Empty methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:53:09'!
+push: anObjectToBePushed in: aStack
+
+	aStack pushWhenEmpty: anObjectToBePushed.! !
+
 
 !Empty methodsFor: 'accessing' stamp: 'JGC 5/14/2022 11:51:54'!
 top: stack
@@ -604,6 +634,43 @@ stackCorrespondsWithState: stack
 	^stack isEmpty.! !
 
 
+!classDefinition: #Full category: 'Stack'!
+StackStates subclass: #Full
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack'!
+
+!Full methodsFor: 'accessing' stamp: 'JGC 5/16/2022 11:56:30'!
+top: stack
+
+	^stack topWhenFull.
+	! !
+
+
+!Full methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:56:22'!
+pop: stack
+
+	^stack popWhenFull.
+	! !
+
+!Full methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:53:23'!
+push: anObjectToBePushed in: aStack
+
+	aStack pushWhenFull: anObjectToBePushed.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Full class' category: 'Stack'!
+Full class
+	instanceVariableNames: ''!
+
+!Full class methodsFor: 'state detecting' stamp: 'JGC 5/16/2022 11:54:24'!
+stackCorrespondsWithState: stack
+
+	^stack isFull.! !
+
+
 !classDefinition: #NotEmpty category: 'Stack'!
 StackStates subclass: #NotEmpty
 	instanceVariableNames: ''
@@ -616,6 +683,11 @@ pop: stack
 
 	^stack popWhenNotEmpty.
 	! !
+
+!NotEmpty methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:53:31'!
+push: anObjectToBePushed in: aStack
+
+	aStack pushWhenNotEmpty: anObjectToBePushed.! !
 
 
 !NotEmpty methodsFor: 'accessing' stamp: 'JGC 5/14/2022 11:51:50'!
@@ -631,7 +703,7 @@ top: stack
 NotEmpty class
 	instanceVariableNames: ''!
 
-!NotEmpty class methodsFor: 'state detecting' stamp: 'JGC 5/14/2022 11:54:52'!
+!NotEmpty class methodsFor: 'state detecting' stamp: 'JGC 5/16/2022 11:57:47'!
 stackCorrespondsWithState: stack
 
-	^stack isEmpty not.! !
+	^(stack isEmpty not and: stack isFull not)! !
