@@ -1,50 +1,60 @@
 !classDefinition: #OOStackTest category: 'Stack'!
 TestCase subclass: #OOStackTest
-	instanceVariableNames: 'stack pushedObject firstPushedObject secondPushedObject'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack'!
 
-!OOStackTest methodsFor: 'private' stamp: 'MS 5/15/2022 22:54:01'!
-popObjectsFromEmptyStackRaisesError
-
-	^ self
-		should: [ stack pop ]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOStack stackEmptyErrorDescription ]! !
-
-
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:50:50'!
+!OOStackTest methodsFor: 'test' stamp: 'HernanWilkinson 5/7/2012 11:30'!
 test01StackShouldBeEmptyWhenCreated
+
+	| stack |
+	
+	stack := OOStack new.
 	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:50:58'!
+!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:29:55'!
 test02PushAddElementsToTheStack
 
-	stack push: pushedObject .
+	| stack |
+	
+	stack := OOStack new.
+	stack push: 'something'.
 	
 	self deny: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:51:22'!
+!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:01'!
 test03PopRemovesElementsFromTheStack
 
-	stack push: pushedObject.
+	| stack |
+	
+	stack := OOStack new.
+	stack push: 'something'.
 	stack pop.
 	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:51:37'!
+!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:09'!
 test04PopReturnsLastPushedObject
 
+	| stack pushedObject |
+	
+	stack := OOStack new.
+	pushedObject := 'something'.
 	stack push: pushedObject.
 	
-	self assert: stack pop = pushedObject.! !
+	self assert: stack pop = pushedObject! !
 
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:51:45'!
+!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:48'!
 test05StackBehavesLIFO
 
+	| stack firstPushedObject secondPushedObject |
+	
+	stack := OOStack new.
+	firstPushedObject := 'first'.
+	secondPushedObject := 'second'.
+	
 	stack push: firstPushedObject.
 	stack push: secondPushedObject.
 	
@@ -53,17 +63,27 @@ test05StackBehavesLIFO
 	self assert: stack isEmpty 
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:52:02'!
+!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:20'!
 test06TopReturnsLastPushedObject
 
+	| stack pushedObject |
+	
+	stack := OOStack new.
+	pushedObject := 'something'.
+	
 	stack push: pushedObject.
 	
 	self assert: stack top = pushedObject.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:52:15'!
+!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:24'!
 test07TopDoesNotRemoveObjectFromStack
 
+	| stack pushedObject |
+	
+	stack := OOStack new.
+	pushedObject := 'something'.
+	
 	stack push: pushedObject.
 	
 	self assert: stack size = 1.
@@ -71,26 +91,43 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: stack size = 1.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:54:01'!
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/11/2022 13:55:31'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
 
-	self popObjectsFromEmptyStackRaisesError
+	| stack  |
+	
+	stack := OOStack new.
+	self
+		should: [ stack pop ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:54:01'!
+!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:31'!
 test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 
+	| stack  |
+	
+	stack := OOStack new.
 	stack push: 'something'.
 	stack pop.
 	
-	self popObjectsFromEmptyStackRaisesError
+	self
+		should: [ stack pop ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:52:29'!
+!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:44'!
 test10CanNotTopWhenThereAreNoObjectsInTheStack
 
+	| stack  |
+	
+	stack := OOStack new.
 	self
 		should: [ stack top ]
 		raise: Error - MessageNotUnderstood 
@@ -98,16 +135,6 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
 		
 ! !
-
-
-!OOStackTest methodsFor: 'setup' stamp: 'MS 5/15/2022 22:50:29'!
-setUp
-
-	stack := OOStack new. 
-	pushedObject := 'something'.
-	
-	firstPushedObject := 'first'.
-	secondPushedObject := 'second'.! !
 
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack'!
