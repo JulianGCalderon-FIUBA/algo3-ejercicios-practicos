@@ -144,36 +144,40 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack'!
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:05:09'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'JGC 5/15/2022 22:31:40'!
 test01CanNotFindSentenceWithEmptyPrefix
 
-	| prefix |
-	prefix := ''.
+	| aPrefix |
+	aPrefix := ''.
 
-	self should: [ sentenceFinder find: prefix ] 
-	raise: Error 
-	withExceptionDo: 
-		[:anError | self assert: SentenceFinderByPrefix prefixIsNotValidErrorDescription equals: anError messageText].
+	self findSentencesWithInvalidPrefixRaisesInvalidPrefixError: aPrefix.
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:05:54'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'JGC 5/15/2022 22:31:47'!
 test02CanNotFindSentenceWithPrefixWithSpaces
 
-	| prefix |
-	prefix := 'hola ori'.
+	| aPrefix |
+	aPrefix := 'hola ori'.
 
-	self should: [ sentenceFinder find: prefix ] 
-	raise: Error 
-	withExceptionDo: 
-		[:anError | self assert: SentenceFinderByPrefix prefixIsNotValidErrorDescription equals: anError messageText].
+	self findSentencesWithInvalidPrefixRaisesInvalidPrefixError: aPrefix.
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:16:05'!
-test03CanFindSentencesWithUndercasePrefix
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'JGC 5/15/2022 22:31:51'!
+test03CanNotFindSentenceWithPrefixNotAString
+
+	| aPrefix |
+	aPrefix := 4.
+
+	self findSentencesWithInvalidPrefixRaisesInvalidPrefixError: aPrefix.
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'JGC 5/15/2022 22:17:48'!
+test04CanFindSentencesWithUndercasePrefix
 
 	| prefix sentences |
 	
 	prefix := 'abc'.
+	
 	sentences := OrderedCollection new.
 	sentences add: 'abcxyz'.
 	sentences add: 'abcdef'.
@@ -182,32 +186,34 @@ test03CanFindSentencesWithUndercasePrefix
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:17:07'!
-test04CanFindSentencesWithUppercasePrefix
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'JGC 5/15/2022 22:17:44'!
+test05CanFindSentencesWithUppercasePrefix
 
 	| prefix sentences |
 	
 	prefix := 'ABC'.
+	
 	sentences := OrderedCollection new.
 	sentences add: 'ABCxyz'.
 	sentences add: 'ABCdef'.
 	
 	self assert: sentences equals: (sentenceFinder find: prefix).! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:18:53'!
-test05CanFindSentencesWithMixedcasePrefix
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'JGC 5/15/2022 22:17:40'!
+test06CanFindSentencesWithMixedcasePrefix
 
 	| prefix sentences |
 	
 	prefix := 'AbC'.
+	
 	sentences := OrderedCollection new.
 	sentences add: 'AbCxyz'.
 	sentences add: 'AbCdef'.
 	
 	self assert: sentences equals: (sentenceFinder find: prefix).! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:25:31'!
-test06SentenceWithPrefixNotAtBeginningIsNotIncluded
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'JGC 5/15/2022 22:17:36'!
+test07SentenceWithPrefixNotAtBeginningIsNotIncluded
 
 	| prefix sentence |
 	
@@ -216,22 +222,34 @@ test06SentenceWithPrefixNotAtBeginningIsNotIncluded
 	
 	self assert: ((sentenceFinder find: prefix) includes: sentence) not.! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MS 5/15/2022 19:29:43'!
-test07OriginalStackIsNotModifiedAfterFindingSentences
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'JGC 5/15/2022 22:17:31'!
+test08OriginalStackIsNotModifiedAfterFindingSentences
 
 	| prefix originalSize |
 	
 	prefix := 'abc'.
 	originalSize := stack size.
+	
 	sentenceFinder find: prefix.
 	
 	self assert: originalSize equals: stack size. ! !
 
 
-!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'MS 5/15/2022 19:18:42'!
+!SentenceFinderByPrefixTest methodsFor: 'asserts - private' stamp: 'JGC 5/15/2022 22:31:16'!
+findSentencesWithInvalidPrefixRaisesInvalidPrefixError: aPrefix
+
+	^self should: 
+		[ sentenceFinder find: aPrefix ] 
+	raise: Error 
+	withExceptionDo: 
+		[:anError | self assert: SentenceFinderByPrefix prefixIsNotValidErrorDescription equals: anError messageText].! !
+
+
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'JGC 5/15/2022 22:40:48'!
 setUp
 	
 	stack := OOStack new.
+	
 	stack push: 'abcdef'.
 	stack push: 'abcxyz'.
 	
@@ -242,6 +260,7 @@ setUp
 	stack push: 'AbCxyz'.
 	
 	stack push: 'holaabcchau'.
+	
 	sentenceFinder := SentenceFinderByPrefix new with: stack.
 	
 	! !
@@ -278,10 +297,10 @@ pop
 	
 ! !
 
-!OOStack methodsFor: 'operations' stamp: 'JGC 5/11/2022 14:34:21'!
-push: aString
+!OOStack methodsFor: 'operations' stamp: 'JGC 5/15/2022 22:02:26'!
+push: aStringToBePushed
 
-	elements add: aString.! !
+	elements add: aStringToBePushed.! !
 
 
 !OOStack methodsFor: 'testing' stamp: 'JGC 5/11/2022 13:48:53'!
@@ -290,13 +309,13 @@ isEmpty
 	^self size = 0.! !
 
 
-!OOStack methodsFor: 'private' stamp: 'JGC 5/15/2022 17:45:19'!
+!OOStack methodsFor: 'state detecting' stamp: 'JGC 5/15/2022 20:22:09'!
 correspondingStateInstance
 	
 	StackStates subclasses 
-		detect: [:state | state stackCorrespondsWithState: self ] 
-		ifFound: [:state | ^state new] 
-		ifNone: [OOStack error: OOStack stackCorrespondsToNoStateErrorDescription ].! !
+		detect: [ :state | state stackCorrespondsWithState: self ] 
+		ifFound: [ :state | ^state new] 
+		ifNone: [ OOStack error: OOStack stackCorrespondsToNoStateErrorDescription ].! !
 
 
 !OOStack methodsFor: 'accessing - private' stamp: 'JGC 5/13/2022 15:59:48'!
@@ -354,63 +373,82 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack'!
 
-!SentenceFinderByPrefix methodsFor: 'find' stamp: 'MS 5/15/2022 18:49:03'!
-find: prefix
-
-	(self isPrefixValid: prefix) 
-	ifFalse: 
-	[self prefixIsNotValid ]
-	ifTrue: 
-	[^self listOfStringsWithPrefix: prefix].! !
-
-
-!SentenceFinderByPrefix methodsFor: 'error' stamp: 'MS 5/15/2022 18:48:22'!
-prefixIsNotValid
-
-	^ SentenceFinderByPrefix error: SentenceFinderByPrefix prefixIsNotValidErrorDescription! !
-
-
-!SentenceFinderByPrefix methodsFor: 'initialize' stamp: 'MS 5/15/2022 19:04:33'!
-with: anOOStack 
-	stack := anOOStack.! !
-
-
-!SentenceFinderByPrefix methodsFor: 'private' stamp: 'MS 5/15/2022 19:37:04'!
-if: sentence startsWithPrefix: prefix addTo: list
-
-	(sentence findString: prefix) = 1 
-	ifTrue: 
-	[ list add: sentence ].! !
-
-!SentenceFinderByPrefix methodsFor: 'private' stamp: 'MS 5/15/2022 19:37:58'!
-listOfStringsWithPrefix: prefix
-
-	| listOfSentenceswithPrefix  listOfAllSentences|
+!SentenceFinderByPrefix methodsFor: 'find' stamp: 'JGC 5/15/2022 22:25:32'!
+find: aPrefix
+		
+	self assertPrefixIsValid: aPrefix.
 	
-	listOfSentenceswithPrefix := OrderedCollection new.
-	listOfAllSentences := OrderedCollection new.
+	^self findWhenPrefixIsValid: aPrefix 
+		
+	! !
+
+
+!SentenceFinderByPrefix methodsFor: 'find - private' stamp: 'JGC 5/15/2022 22:25:47'!
+findWhenPrefixIsValid: aPrefix
+
+	| listOfSentenceswithPrefix  listOfAllSentences |
 	
-	[ stack isEmpty not ] 
-	whileTrue: 
-	[ |sentence|
-		sentence := stack pop.
-		listOfAllSentences add: sentence.
-		self if: sentence startsWithPrefix: prefix addTo: listOfSentenceswithPrefix ].
 	
-	self refillStackWith: listOfAllSentences.
+	listOfAllSentences := self createOrderedCollectionFromStack.
 	
-	^listOfSentenceswithPrefix.! !
-
-!SentenceFinderByPrefix methodsFor: 'private' stamp: 'MS 5/15/2022 19:40:49'!
-refillStackWith: list
-
-	list reversed do: [:element | stack push: element ].! !
+	listOfSentenceswithPrefix := listOfAllSentences select: [ :sentence | self starts: sentence with: aPrefix].
+	
+	^listOfSentenceswithPrefix.
+! !
 
 
-!SentenceFinderByPrefix methodsFor: 'testing' stamp: 'MS 5/15/2022 18:08:43'!
-isPrefixValid: prefix
+!SentenceFinderByPrefix methodsFor: 'initialize' stamp: 'JGC 5/15/2022 20:06:49'!
+with: aStack 
 
-	^((prefix includesSubString: ' ') or: (prefix = '')) not. ! !
+	stack := aStack.! !
+
+
+!SentenceFinderByPrefix methodsFor: 'testing' stamp: 'JGC 5/15/2022 22:25:17'!
+assertPrefixIsValid: aPrefix
+	
+	(self isPrefixNotValid: aPrefix) ifTrue: 
+		[^SentenceFinderByPrefix error: SentenceFinderByPrefix prefixIsNotValidErrorDescription]! !
+
+!SentenceFinderByPrefix methodsFor: 'testing' stamp: 'JGC 5/15/2022 22:25:57'!
+isPrefixNotValid: aPrefix
+	
+	aPrefix isString ifFalse: [ ^true ].
+	
+	^(aPrefix includesSubString: ' ') or: (aPrefix = ''). ! !
+
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'JGC 5/15/2022 22:35:53'!
+createOrderedCollectionFromStack
+	
+	| anOrderedCollection |
+	
+	anOrderedCollection := OrderedCollection new.
+	
+	self emptyStackIn: anOrderedCollection.
+
+	self refillStackWith: anOrderedCollection.
+	
+	^anOrderedCollection.
+	
+	"\\(O.O)//"! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'JGC 5/15/2022 22:37:10'!
+emptyStackIn: anOrderedCollection
+
+	^[stack isEmpty not] whileTrue: 
+	[
+		anOrderedCollection add: stack pop
+	].! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'JGC 5/15/2022 22:37:52'!
+refillStackWith: anOrderedCollection
+
+	anOrderedCollection reversed do: [:element | stack push: element ].! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'JGC 5/15/2022 22:26:54'!
+starts: aSentence with: aPrefix
+
+	^(aSentence findString: aPrefix) = 1.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -418,10 +456,15 @@ isPrefixValid: prefix
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
 
-!SentenceFinderByPrefix class methodsFor: 'error description' stamp: 'MS 5/15/2022 18:02:20'!
+!SentenceFinderByPrefix class methodsFor: 'error description' stamp: 'JGC 5/15/2022 21:50:04'!
+prefixCorrespondsWithNoStateErrorDescription
+
+	^'Prefix corresponds with no state'.! !
+
+!SentenceFinderByPrefix class methodsFor: 'error description' stamp: 'JGC 5/15/2022 22:24:26'!
 prefixIsNotValidErrorDescription
 
-	^'Prefix is not valid'.! !
+	^ 'Prefix is not valid'.! !
 
 
 !classDefinition: #StackStates category: 'Stack'!
@@ -448,7 +491,7 @@ pop: stack
 StackStates class
 	instanceVariableNames: ''!
 
-!StackStates class methodsFor: 'testing' stamp: 'JGC 5/14/2022 11:53:47'!
+!StackStates class methodsFor: 'state detecting' stamp: 'JGC 5/14/2022 11:53:47'!
 stackCorrespondsWithState: stack
 
 	self subclassResponsibility.! !
@@ -481,7 +524,7 @@ top: stack
 Empty class
 	instanceVariableNames: ''!
 
-!Empty class methodsFor: 'testing' stamp: 'JGC 5/14/2022 11:54:36'!
+!Empty class methodsFor: 'state detecting' stamp: 'JGC 5/14/2022 11:54:36'!
 stackCorrespondsWithState: stack
 
 	^stack isEmpty.! !
@@ -514,7 +557,7 @@ top: stack
 NotEmpty class
 	instanceVariableNames: ''!
 
-!NotEmpty class methodsFor: 'testing' stamp: 'JGC 5/14/2022 11:54:52'!
+!NotEmpty class methodsFor: 'state detecting' stamp: 'JGC 5/14/2022 11:54:52'!
 stackCorrespondsWithState: stack
 
 	^stack isEmpty not.! !
