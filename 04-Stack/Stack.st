@@ -1,60 +1,55 @@
 !classDefinition: #OOStackTest category: 'Stack'!
 TestCase subclass: #OOStackTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'stack pushedObject firstPushedObject secondPushedObject limitedStack thirdPushedObject'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack'!
 
-!OOStackTest methodsFor: 'test' stamp: 'HernanWilkinson 5/7/2012 11:30'!
-test01StackShouldBeEmptyWhenCreated
+!OOStackTest methodsFor: 'private' stamp: 'JGC 5/16/2022 10:46:31'!
+pushAndPopAnElementToStack
 
-	| stack |
-	
-	stack := OOStack new.
+	stack push: firstPushedObject.
+	stack pop.! !
+
+!OOStackTest methodsFor: 'private' stamp: 'JGC 5/16/2022 11:19:35'!
+should: aClosureToBeEvaluated raiseErrorWithErrorDescription: anErrorDescription
+
+	^self 
+		should: aClosureToBeEvaluated
+	 	raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = anErrorDescription].! !
+
+
+!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:50:50'!
+test01StackShouldBeEmptyWhenCreated
 	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:29:55'!
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 10:42:53'!
 test02PushAddElementsToTheStack
 
-	| stack |
-	
-	stack := OOStack new.
-	stack push: 'something'.
+	stack push: firstPushedObject .
 	
 	self deny: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:01'!
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 10:46:48'!
 test03PopRemovesElementsFromTheStack
 
-	| stack |
-	
-	stack := OOStack new.
-	stack push: 'something'.
-	stack pop.
+	self pushAndPopAnElementToStack.
 	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:09'!
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 10:43:54'!
 test04PopReturnsLastPushedObject
 
-	| stack pushedObject |
+	stack push: firstPushedObject.
 	
-	stack := OOStack new.
-	pushedObject := 'something'.
-	stack push: pushedObject.
-	
-	self assert: stack pop = pushedObject! !
+	self assert: stack pop = firstPushedObject.! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:48'!
+!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:51:45'!
 test05StackBehavesLIFO
 
-	| stack firstPushedObject secondPushedObject |
-	
-	stack := OOStack new.
-	firstPushedObject := 'first'.
-	secondPushedObject := 'second'.
-	
 	stack push: firstPushedObject.
 	stack push: secondPushedObject.
 	
@@ -63,27 +58,17 @@ test05StackBehavesLIFO
 	self assert: stack isEmpty 
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:20'!
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 10:43:44'!
 test06TopReturnsLastPushedObject
 
-	| stack pushedObject |
+	stack push: firstPushedObject .
 	
-	stack := OOStack new.
-	pushedObject := 'something'.
-	
-	stack push: pushedObject.
-	
-	self assert: stack top = pushedObject.
+	self assert: stack top = firstPushedObject .
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:24'!
+!OOStackTest methodsFor: 'test' stamp: 'MS 5/15/2022 22:52:15'!
 test07TopDoesNotRemoveObjectFromStack
 
-	| stack pushedObject |
-	
-	stack := OOStack new.
-	pushedObject := 'something'.
-	
 	stack push: pushedObject.
 	
 	self assert: stack size = 1.
@@ -91,50 +76,75 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: stack size = 1.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'JGC 5/11/2022 13:55:31'!
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 11:19:35'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
-
-	| stack  |
 	
-	stack := OOStack new.
-	self
-		should: [ stack pop ]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
-		
+	self should: [stack pop] raiseErrorWithErrorDescription: OOStack stackEmptyErrorDescription.		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:31'!
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 11:19:35'!
 test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 
-	| stack  |
+	self pushAndPopAnElementToStack.
 	
-	stack := OOStack new.
-	stack push: 'something'.
-	stack pop.
-	
-	self
-		should: [ stack pop ]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
+	self should: [stack pop] raiseErrorWithErrorDescription: OOStack stackEmptyErrorDescription.		
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:44'!
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 11:19:35'!
 test10CanNotTopWhenThereAreNoObjectsInTheStack
-
-	| stack  |
 	
-	stack := OOStack new.
-	self
-		should: [ stack top ]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
+	self should: [stack top] raiseErrorWithErrorDescription: OOStack stackEmptyErrorDescription.		
 		
 ! !
+
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 11:11:21'!
+test11LimitedStackShouldBeEmptyWhenCreated
+	
+	self assert: limitedStack isEmpty! !
+
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 11:11:51'!
+test12PushAddElementsToLimitedStack
+
+	limitedStack push: firstPushedObject .
+	
+	self deny: limitedStack isEmpty! !
+
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 11:12:57'!
+test13PopReturnsLastPushedObjectOnLimitedStack
+
+	limitedStack push: firstPushedObject.
+	
+	self assert: limitedStack pop = firstPushedObject.! !
+
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 11:13:31'!
+test14TopReturnsLastPushedObjectOnLimitedStack
+
+	limitedStack push: firstPushedObject .
+	
+	self assert: limitedStack top = firstPushedObject .
+	! !
+
+!OOStackTest methodsFor: 'test' stamp: 'JGC 5/16/2022 11:19:35'!
+test15CanNotPushWhenLimitedStackIsFull
+
+	limitedStack push: firstPushedObject.
+	limitedStack push: secondPushedObject.
+	
+	self should: [limitedStack push: thirdPushedObject] raiseErrorWithErrorDescription: LimitedStack stackFullErrorDescription.
+		
+! !
+
+
+!OOStackTest methodsFor: 'setup' stamp: 'JGC 5/16/2022 11:10:42'!
+setUp
+
+	stack := UnlimitedStack new.
+	limitedStack := LimitedStack newWithLimit: 2.
+	
+	firstPushedObject := 'first'.
+	secondPushedObject := 'second'.
+	thirdPushedObject := 'third'.! !
 
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack'!
@@ -245,10 +255,10 @@ findSentencesWithInvalidPrefixRaisesInvalidPrefixError: aPrefix
 		[:anError | self assert: SentenceFinderByPrefix prefixIsNotValidErrorDescription equals: anError messageText].! !
 
 
-!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'JGC 5/15/2022 22:40:48'!
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'JGC 5/16/2022 11:04:15'!
 setUp
 	
-	stack := OOStack new.
+	stack := UnlimitedStack new.
 	
 	stack push: 'abcdef'.
 	stack push: 'abcxyz'.
@@ -297,10 +307,10 @@ pop
 	
 ! !
 
-!OOStack methodsFor: 'operations' stamp: 'JGC 5/15/2022 22:02:26'!
-push: aStringToBePushed
+!OOStack methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:29:37'!
+push: anObjectToBePushed
 
-	elements add: aStringToBePushed.! !
+	self subclassResponsibility.! !
 
 
 !OOStack methodsFor: 'testing' stamp: 'JGC 5/11/2022 13:48:53'!
@@ -344,6 +354,11 @@ popWhenNotEmpty
 
 	^self removeLastElement.! !
 
+!OOStack methodsFor: 'operations - private' stamp: 'JGC 5/16/2022 11:29:45'!
+pushWhenNotFull: anObjectToBePushed
+	
+	elements add: anObjectToBePushed.! !
+
 !OOStack methodsFor: 'operations - private' stamp: 'JGC 5/13/2022 15:55:54'!
 removeLastElement
 	
@@ -364,6 +379,65 @@ stackCorrespondsToNoStateErrorDescription
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+
+!classDefinition: #LimitedStack category: 'Stack'!
+OOStack subclass: #LimitedStack
+	instanceVariableNames: 'limit'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack'!
+
+!LimitedStack methodsFor: 'initialization' stamp: 'JGC 5/16/2022 11:08:53'!
+with: aLimit
+	
+	limit := aLimit.! !
+
+
+!LimitedStack methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:30:26'!
+push: anObjectToBePushed
+	
+	(elements size = limit) ifTrue:
+	[
+		self pushWhenFull: anObjectToBePushed.
+	].
+
+	self pushWhenNotFull: anObjectToBePushed.! !
+
+
+!LimitedStack methodsFor: 'operations - private' stamp: 'JGC 5/16/2022 11:29:22'!
+pushWhenFull: anObjectToBePushed
+
+	LimitedStack error: LimitedStack stackFullErrorDescription.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'LimitedStack class' category: 'Stack'!
+LimitedStack class
+	instanceVariableNames: ''!
+
+!LimitedStack class methodsFor: 'instance creation' stamp: 'JGC 5/16/2022 11:07:41'!
+newWithLimit: limit
+	^LimitedStack new with: limit.! !
+
+
+!LimitedStack class methodsFor: 'error descriptions' stamp: 'JGC 5/16/2022 11:19:01'!
+stackFullErrorDescription
+
+	^'Stack is full'.! !
+
+
+!classDefinition: #UnlimitedStack category: 'Stack'!
+OOStack subclass: #UnlimitedStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack'!
+
+!UnlimitedStack methodsFor: 'operations' stamp: 'JGC 5/16/2022 11:30:33'!
+push: anObjectToBePushed
+
+	self pushWhenNotFull: anObjectToBePushed.! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack'!
