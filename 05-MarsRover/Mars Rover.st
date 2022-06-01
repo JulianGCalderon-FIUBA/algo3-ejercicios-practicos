@@ -436,11 +436,6 @@ direction
 
 	^ direction.! !
 
-!MarsRover methodsFor: 'accessing' stamp: 'JGC 6/1/2022 00:04:20'!
-position
-
-	^ position.! !
-
 
 !MarsRover methodsFor: 'asserting' stamp: 'JGC 6/1/2022 00:06:49'!
 assertCardinalDirectionIsValid: aCardinalDirection
