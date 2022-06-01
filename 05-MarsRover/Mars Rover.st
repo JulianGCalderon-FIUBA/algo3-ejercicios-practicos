@@ -1,4 +1,4 @@
-!classDefinition: #MarsRoverTest category: #'Mars Rover'!
+!classDefinition: #MarsRoverTest category: 'Mars Rover'!
 TestCase subclass: #MarsRoverTest
 	instanceVariableNames: 'marsRoverFacingNorth marsRoverFacingSouth marsRoverFacingEast marsRoverFacingWest'
 	classVariableNames: ''
@@ -31,6 +31,13 @@ south
 west
 	^#west! !
 
+
+!MarsRoverTest methodsFor: 'asserts' stamp: 'sm 6/1/2022 14:23:07'!
+assertCardinalDirection: aCardinalDirection equalsMarsRoverDirection: aMarsRover afterExecutingCommand: aCommand
+	
+	aMarsRover executeCommands: aCommand.
+	
+	self assert: aCardinalDirection equals: aMarsRover direction.! !
 
 !MarsRoverTest methodsFor: 'asserts' stamp: 'JGC 6/1/2022 14:09:09'!
 assertRoverReturnsErrorIfRecievesInvalidCommand: anInvalidCommand
@@ -102,27 +109,23 @@ test06WhenNorthFacingRoverReceivesForwardCommandItMovesNorth
 	
 	self assertXCoordinate: 0 YCoordinate: 1 equalsMarsRoverCoordinates: rover afterExecutingCommand: 'f'.! !
 
-!MarsRoverTest methodsFor: 'tests - facing north' stamp: 'JGC 6/1/2022 14:03:43'!
+!MarsRoverTest methodsFor: 'tests - facing north' stamp: 'sm 6/1/2022 14:23:29'!
 test07WhenNorthFacingRoverReceivesLeftCommandItRotatesWest
 	
 	| rover |
 	
 	rover := marsRoverFacingNorth.
-	
-	rover executeCommands: 'l'.
-	
-	self assert: self west equals: rover direction. ! !
 
-!MarsRoverTest methodsFor: 'tests - facing north' stamp: 'JGC 6/1/2022 13:43:40'!
+	self assertCardinalDirection: self west equalsMarsRoverDirection: rover afterExecutingCommand: 'l'.! !
+
+!MarsRoverTest methodsFor: 'tests - facing north' stamp: 'sm 6/1/2022 14:23:47'!
 test08WhenNorthFacingRoverReceivesRightCommandItRotatesEast
 	
 	| rover |
 	
 	rover := marsRoverFacingNorth.
-	
-	rover executeCommands: 'r'.
-	
-	self assert: self east equals: rover direction. ! !
+
+	self assertCardinalDirection: self east equalsMarsRoverDirection: rover afterExecutingCommand: 'r'.! !
 
 
 !MarsRoverTest methodsFor: 'tests - facing south' stamp: 'JGC 6/1/2022 14:04:00'!
@@ -143,27 +146,23 @@ test10WhenSouthFacingRoverReceivesForwardCommandItMovesSouth
 	
 	self assertXCoordinate: 0 YCoordinate: -1 equalsMarsRoverCoordinates: rover afterExecutingCommand: 'f'.! !
 
-!MarsRoverTest methodsFor: 'tests - facing south' stamp: 'JGC 6/1/2022 13:45:56'!
+!MarsRoverTest methodsFor: 'tests - facing south' stamp: 'sm 6/1/2022 14:24:13'!
 test11WhenSouthFacingRoverReceivesLeftCommandItMovesEast
 
 	| rover |
 	
 	rover := marsRoverFacingSouth.
 	
-	rover executeCommands: 'l'.
-	
-	self assert: self east equals: rover direction. ! !
+	self assertCardinalDirection: self east equalsMarsRoverDirection: rover afterExecutingCommand: 'l'.! !
 
-!MarsRoverTest methodsFor: 'tests - facing south' stamp: 'JGC 6/1/2022 13:47:06'!
+!MarsRoverTest methodsFor: 'tests - facing south' stamp: 'sm 6/1/2022 14:24:20'!
 test12WhenSouthFacingRoverReceivesRightCommandItMovesWest
 
 	| rover |
 	
 	rover := marsRoverFacingSouth.
 	
-	rover executeCommands: 'r'.
-	
-	self assert: self west equals: rover direction. ! !
+	self assertCardinalDirection: self west equalsMarsRoverDirection: rover afterExecutingCommand: 'r'.! !
 
 
 !MarsRoverTest methodsFor: 'tests - facing east' stamp: 'JGC 6/1/2022 14:05:34'!
@@ -184,27 +183,23 @@ test14WhenEastFacingRoverReceivesForwardCommandItMovesEast
 	
 	self assertXCoordinate: 1 YCoordinate: 0 equalsMarsRoverCoordinates: rover afterExecutingCommand: 'f'.! !
 
-!MarsRoverTest methodsFor: 'tests - facing east' stamp: 'JGC 6/1/2022 13:48:12'!
+!MarsRoverTest methodsFor: 'tests - facing east' stamp: 'sm 6/1/2022 14:24:28'!
 test15WhenEastFacingRoverReceivesLeftCommandItRotatesNorth
 
 	| rover |
 	
 	rover := marsRoverFacingEast.
 	
-	rover executeCommands: 'l'.
-	
-	self assert: self north equals: rover direction. ! !
+	self assertCardinalDirection: self north equalsMarsRoverDirection: rover afterExecutingCommand: 'l'.! !
 
-!MarsRoverTest methodsFor: 'tests - facing east' stamp: 'JGC 6/1/2022 13:49:40'!
+!MarsRoverTest methodsFor: 'tests - facing east' stamp: 'sm 6/1/2022 14:24:38'!
 test16WhenEastFacingRoverReceivesRightCommandItRotatesSouth
 
 	| rover |
 	
 	rover := marsRoverFacingEast.
 	
-	rover executeCommands: 'r'.
-	
-	self assert: self south equals: rover direction. ! !
+	self assertCardinalDirection: self south equalsMarsRoverDirection: rover afterExecutingCommand: 'r'.! !
 
 
 !MarsRoverTest methodsFor: 'tests - facing west' stamp: 'JGC 6/1/2022 14:06:05'!
@@ -225,27 +220,23 @@ test18WhenWestFacingRoverReceivesForwardCommandItMovesWest
 	
 	self assertXCoordinate: -1 YCoordinate: 0 equalsMarsRoverCoordinates: rover afterExecutingCommand: 'f'.! !
 
-!MarsRoverTest methodsFor: 'tests - facing west' stamp: 'JGC 6/1/2022 13:50:27'!
+!MarsRoverTest methodsFor: 'tests - facing west' stamp: 'sm 6/1/2022 14:24:50'!
 test19WhenWestFacingRoverReceivesLeftCommandItRotatesSouth
 
 	| rover |
 	
 	rover := marsRoverFacingWest.
 	
-	rover executeCommands: 'l'.
-	
-	self assert: self south equals: rover direction. ! !
+	self assertCardinalDirection: self south equalsMarsRoverDirection: rover afterExecutingCommand: 'l'.! !
 
-!MarsRoverTest methodsFor: 'tests - facing west' stamp: 'JGC 6/1/2022 13:50:46'!
+!MarsRoverTest methodsFor: 'tests - facing west' stamp: 'sm 6/1/2022 14:25:05'!
 test20WhenWestFacingRoverReceivesRightCommandItRotatesNorth
 
 	| rover |
 	
 	rover := marsRoverFacingWest.
 	
-	rover executeCommands: 'r'.
-	
-	self assert: self north equals: rover direction. ! !
+	self assertCardinalDirection: self north equalsMarsRoverDirection: rover afterExecutingCommand: 'r'.! !
 
 
 !MarsRoverTest methodsFor: 'tests - invalid commands' stamp: 'JGC 6/1/2022 14:09:45'!
@@ -303,7 +294,7 @@ test25RoverExecutesAllCommandsUntilInvalidWhenItReceivesAStringWithMultipleValid
 	! !
 
 
-!classDefinition: #Command category: #'Mars Rover'!
+!classDefinition: #Command category: 'Mars Rover'!
 Object subclass: #Command
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -317,7 +308,7 @@ executeAs: aMarsRover
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Command class' category: #'Mars Rover'!
+!classDefinition: 'Command class' category: 'Mars Rover'!
 Command class
 	instanceVariableNames: ''!
 
@@ -327,7 +318,7 @@ isBoundedTo: aCharacter
 	self subclassResponsibility.! !
 
 
-!classDefinition: #CommandBackwards category: #'Mars Rover'!
+!classDefinition: #CommandBackwards category: 'Mars Rover'!
 Command subclass: #CommandBackwards
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -341,7 +332,7 @@ executeAs: aMarsRover
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'CommandBackwards class' category: #'Mars Rover'!
+!classDefinition: 'CommandBackwards class' category: 'Mars Rover'!
 CommandBackwards class
 	instanceVariableNames: ''!
 
@@ -351,7 +342,7 @@ isBoundedTo: aCharacter
 	^ $b = aCharacter.! !
 
 
-!classDefinition: #CommandForward category: #'Mars Rover'!
+!classDefinition: #CommandForward category: 'Mars Rover'!
 Command subclass: #CommandForward
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -365,7 +356,7 @@ executeAs: aMarsRover
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'CommandForward class' category: #'Mars Rover'!
+!classDefinition: 'CommandForward class' category: 'Mars Rover'!
 CommandForward class
 	instanceVariableNames: ''!
 
@@ -375,7 +366,7 @@ isBoundedTo: aCharacter
 	^ $f = aCharacter.! !
 
 
-!classDefinition: #CommandLeft category: #'Mars Rover'!
+!classDefinition: #CommandLeft category: 'Mars Rover'!
 Command subclass: #CommandLeft
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -389,7 +380,7 @@ executeAs: aMarsRover
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'CommandLeft class' category: #'Mars Rover'!
+!classDefinition: 'CommandLeft class' category: 'Mars Rover'!
 CommandLeft class
 	instanceVariableNames: ''!
 
@@ -399,7 +390,7 @@ isBoundedTo: aCharacter
 	^ $l = aCharacter.! !
 
 
-!classDefinition: #CommandRight category: #'Mars Rover'!
+!classDefinition: #CommandRight category: 'Mars Rover'!
 Command subclass: #CommandRight
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -413,7 +404,7 @@ executeAs: aMarsRover
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'CommandRight class' category: #'Mars Rover'!
+!classDefinition: 'CommandRight class' category: 'Mars Rover'!
 CommandRight class
 	instanceVariableNames: ''!
 
@@ -423,7 +414,7 @@ isBoundedTo: aCharacter
 	^ $r = aCharacter.! !
 
 
-!classDefinition: #MarsRover category: #'Mars Rover'!
+!classDefinition: #MarsRover category: 'Mars Rover'!
 Object subclass: #MarsRover
 	instanceVariableNames: 'position direction'
 	classVariableNames: ''
@@ -672,7 +663,7 @@ initializeInXCoordinate: anXCoordinate YCoordinate: aYCoordinate facing: aCardin
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'MarsRover class' category: #'Mars Rover'!
+!classDefinition: 'MarsRover class' category: 'Mars Rover'!
 MarsRover class
 	instanceVariableNames: 'renameMe1 renameMe2'!
 
@@ -703,7 +694,7 @@ marsRoverHasNoValidStateErrorDescription
 	^ 'Mars Rover has no valid state'.! !
 
 
-!classDefinition: #MarsRoverState category: #'Mars Rover'!
+!classDefinition: #MarsRoverState category: 'Mars Rover'!
 Object subclass: #MarsRoverState
 	instanceVariableNames: 'marsRover'
 	classVariableNames: ''
@@ -738,7 +729,7 @@ initializeWith: aMarsRover
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'MarsRoverState class' category: #'Mars Rover'!
+!classDefinition: 'MarsRoverState class' category: 'Mars Rover'!
 MarsRoverState class
 	instanceVariableNames: ''!
 
@@ -754,7 +745,7 @@ correspondsToState: aMarsRover
 	self subclassResponsibility.! !
 
 
-!classDefinition: #MarsRoverFacingEast category: #'Mars Rover'!
+!classDefinition: #MarsRoverFacingEast category: 'Mars Rover'!
 MarsRoverState subclass: #MarsRoverFacingEast
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -783,7 +774,7 @@ executeRightCommand
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'MarsRoverFacingEast class' category: #'Mars Rover'!
+!classDefinition: 'MarsRoverFacingEast class' category: 'Mars Rover'!
 MarsRoverFacingEast class
 	instanceVariableNames: ''!
 
@@ -793,7 +784,7 @@ correspondsToState: aMarsRover
 	^ aMarsRover direction = #east.! !
 
 
-!classDefinition: #MarsRoverFacingNorth category: #'Mars Rover'!
+!classDefinition: #MarsRoverFacingNorth category: 'Mars Rover'!
 MarsRoverState subclass: #MarsRoverFacingNorth
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -822,7 +813,7 @@ executeRightCommand
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'MarsRoverFacingNorth class' category: #'Mars Rover'!
+!classDefinition: 'MarsRoverFacingNorth class' category: 'Mars Rover'!
 MarsRoverFacingNorth class
 	instanceVariableNames: ''!
 
@@ -832,7 +823,7 @@ correspondsToState: aMarsRover
 	^ aMarsRover direction = #north.! !
 
 
-!classDefinition: #MarsRoverFacingSouth category: #'Mars Rover'!
+!classDefinition: #MarsRoverFacingSouth category: 'Mars Rover'!
 MarsRoverState subclass: #MarsRoverFacingSouth
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -861,7 +852,7 @@ executeRightCommand
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'MarsRoverFacingSouth class' category: #'Mars Rover'!
+!classDefinition: 'MarsRoverFacingSouth class' category: 'Mars Rover'!
 MarsRoverFacingSouth class
 	instanceVariableNames: ''!
 
@@ -871,7 +862,7 @@ correspondsToState: aMarsRover
 	^ aMarsRover direction = #south.! !
 
 
-!classDefinition: #MarsRoverFacingWest category: #'Mars Rover'!
+!classDefinition: #MarsRoverFacingWest category: 'Mars Rover'!
 MarsRoverState subclass: #MarsRoverFacingWest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -900,7 +891,7 @@ executeRightCommand
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'MarsRoverFacingWest class' category: #'Mars Rover'!
+!classDefinition: 'MarsRoverFacingWest class' category: 'Mars Rover'!
 MarsRoverFacingWest class
 	instanceVariableNames: ''!
 
