@@ -13,7 +13,7 @@ east
 north
 	^#north! !
 
-!MarsRoverTest methodsFor: 'setUp' stamp: 'JGC 6/1/2022 13:22:11'!
+!MarsRoverTest methodsFor: 'setUp' stamp: 'JGC 6/1/2022 21:29:52'!
 setUp
 
 	marsRoverFacingNorth := MarsRover deployInXCoordinate: 0 YCoordinate: 0 facing: self north. 
@@ -21,7 +21,7 @@ setUp
 	marsRoverFacingEast := MarsRover deployInXCoordinate: 0 YCoordinate: 0 facing: self east.
 	marsRoverFacingWest := MarsRover deployInXCoordinate: 0 YCoordinate: 0 facing: self west.
 		
-	" Mensajes como isFacingNorth, o isFacingEast permiten no depender de simbolos para direcciones cardinales afuera del Mars Rover "! !
+	" Mensajes como isFacingNorth, o isFacingEast permitirian no depender de simbolos para direcciones cardinales afuera del Mars Rover "! !
 
 !MarsRoverTest methodsFor: 'setUp' stamp: 'sm 5/29/2022 18:21:13'!
 south
@@ -32,12 +32,12 @@ west
 	^#west! !
 
 
-!MarsRoverTest methodsFor: 'asserts' stamp: 'sm 6/1/2022 14:23:07'!
+!MarsRoverTest methodsFor: 'asserts' stamp: 'JGC 6/1/2022 22:56:56'!
 assertCardinalDirection: aCardinalDirection equalsMarsRoverDirection: aMarsRover afterExecutingCommand: aCommand
 	
 	aMarsRover executeCommands: aCommand.
 	
-	self assert: aCardinalDirection equals: aMarsRover direction.! !
+	self assert: (aMarsRover isFacingDirection: aCardinalDirection).! !
 
 !MarsRoverTest methodsFor: 'asserts' stamp: 'JGC 6/1/2022 14:09:09'!
 assertRoverReturnsErrorIfRecievesInvalidCommand: anInvalidCommand
@@ -45,11 +45,10 @@ assertRoverReturnsErrorIfRecievesInvalidCommand: anInvalidCommand
 	^ self  should: [ marsRoverFacingNorth executeCommands: anInvalidCommand ]
 		raiseWithErrorDescription: MarsRover invalidCommandReceivedErrorDescription.! !
 
-!MarsRoverTest methodsFor: 'asserts' stamp: 'JGC 6/1/2022 13:23:52'!
+!MarsRoverTest methodsFor: 'asserts' stamp: 'JGC 6/1/2022 22:57:31'!
 assertXCoordinate: anXCoordinate YCoordinate: aYCoordinate equalsMarsRoverCoordinates: aMarsRover
-
-	self assert: anXCoordinate equals: aMarsRover XCoordinate. 
-	self assert: aYCoordinate equals: aMarsRover YCoordinate. ! !
+	
+	self assert: (aMarsRover isInXCoordinate: anXCoordinate andYCoordinate: aYCoordinate).! !
 
 !MarsRoverTest methodsFor: 'asserts' stamp: 'JGC 6/1/2022 14:02:37'!
 assertXCoordinate: anXCoordinate YCoordinate: aYCoordinate equalsMarsRoverCoordinates: aMarsRover afterExecutingCommand: aCommand
@@ -73,10 +72,10 @@ test01RoverIsDeployedInInitialPosition
 	
 	self assertXCoordinate: 0 YCoordinate: 0 equalsMarsRoverCoordinates: marsRoverFacingNorth.! !
 
-!MarsRoverTest methodsFor: 'tests - initialization' stamp: 'JGC 6/1/2022 13:40:38'!
+!MarsRoverTest methodsFor: 'tests - initialization' stamp: 'JGC 6/1/2022 22:58:26'!
 test02RoverIsDeployedFacingInitialDirection
 
-	self assert: self north equals: marsRoverFacingNorth direction. ! !
+	self assert: (marsRoverFacingNorth isFacingDirection: self north).! !
 
 !MarsRoverTest methodsFor: 'tests - initialization' stamp: 'JGC 6/1/2022 13:40:43'!
 test03CannotDeployRoverWithInvalidCoordinates
@@ -267,7 +266,7 @@ test23RoverReturnsErrorWhenItDoesNotReceiveAString
 	! !
 
 
-!MarsRoverTest methodsFor: 'tests - multiple commands' stamp: 'JGC 6/1/2022 13:53:52'!
+!MarsRoverTest methodsFor: 'tests - multiple commands' stamp: 'JGC 6/1/2022 22:59:55'!
 test24RoverExecutesAllCommandsWhenItReceivesMultipleValidCommands
 
 	| rover |
@@ -277,9 +276,9 @@ test24RoverExecutesAllCommandsWhenItReceivesMultipleValidCommands
 	rover executeCommands: 'ffl'.
 	
 	self assertXCoordinate: 0 YCoordinate: -2 equalsMarsRoverCoordinates: rover.
-	self assert: self east equals: rover direction.! !
+	self assert: (rover isFacingDirection: self east).! !
 
-!MarsRoverTest methodsFor: 'tests - multiple commands' stamp: 'JGC 6/1/2022 14:09:56'!
+!MarsRoverTest methodsFor: 'tests - multiple commands' stamp: 'JGC 6/1/2022 23:00:07'!
 test25RoverExecutesAllCommandsUntilInvalidWhenItReceivesAStringWithMultipleValidCommandsAndAnInvalidOne
 
 	| rover |
@@ -290,8 +289,7 @@ test25RoverExecutesAllCommandsUntilInvalidWhenItReceivesAStringWithMultipleValid
 		raiseWithErrorDescription: MarsRover invalidCommandReceivedErrorDescription.
 	
 	self assertXCoordinate: 0 YCoordinate: -4 equalsMarsRoverCoordinates: rover.
-	self assert: self south equals: rover direction.
-	! !
+	self assert: (rover isFacingDirection: self south).! !
 
 
 !classDefinition: #Command category: 'Mars Rover'!
@@ -421,17 +419,7 @@ Object subclass: #MarsRover
 	poolDictionaries: ''
 	category: 'Mars Rover'!
 
-!MarsRover methodsFor: 'accessing' stamp: 'JGC 6/1/2022 13:11:01'!
-XCoordinate
-
-	^ position x.! !
-
-!MarsRover methodsFor: 'accessing' stamp: 'JGC 6/1/2022 13:11:04'!
-YCoordinate
-
-	^ position y.! !
-
-!MarsRover methodsFor: 'accessing' stamp: 'JGC 6/1/2022 00:04:18'!
+!MarsRover methodsFor: 'accessing' stamp: 'JGC 6/1/2022 23:00:39'!
 direction
 
 	^ direction.! !
@@ -481,6 +469,17 @@ executeCommands: aStringOfCommands
 	
 	aStringOfCommands collect: [ :aCommand | self executeCommand: aCommand. ].
 	! !
+
+
+!MarsRover methodsFor: 'testing' stamp: 'JGC 6/1/2022 22:55:08'!
+isFacingDirection: aCardinalDirection
+
+	^ direction = aCardinalDirection.! !
+
+!MarsRover methodsFor: 'testing' stamp: 'JGC 6/1/2022 22:56:17'!
+isInXCoordinate: anXCoordinate andYCoordinate: aYCoordinate
+
+	^ (position x = anXCoordinate ) and: [position y = aYCoordinate ].! !
 
 
 !MarsRover methodsFor: 'private' stamp: 'JGC 6/1/2022 13:21:37'!
