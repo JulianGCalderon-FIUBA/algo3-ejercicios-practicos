@@ -28,12 +28,14 @@ test03WithdrawDecreasesBalanceOnTransactionValue
 	self assert: 50 * peso equals: account1 balance.
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests - transactions' stamp: 'JGC 6/5/2022 21:00:18'!
+!ReceptiveAccountTest methodsFor: 'tests - transactions' stamp: 'JGC 6/6/2022 00:28:20'!
 test04WithdrawValueMustBePositive 
 
 	| withdraw value |
 
 	value _ 50 * peso.
+	Deposit register: value on: account1.
+
 	withdraw _ Withdraw register: value on: account1.	
 	
 	self assert: value equals: withdraw value.
@@ -75,27 +77,120 @@ test07AccountKnowsItsTransactions
 ! !
 
 
-!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 21:09:21'!
+!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 23:49:00'!
 test08RegistraConValor
 
 	| transfer value |
 	
 	value _ 50 * peso.
+	Deposit register: value on: account1.
+	
 	transfer _ AccountTransfer registerWith: value from: account1 to: account2.
 	
 	self assert: value equals: transfer value.
 	
 	! !
 
-!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 21:20:30'!
+!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 23:48:55'!
 test09RegistraEnLasCuentas
 
 	| transfer value |
 	
-	transfer _ AccountTransfer registerWith: 50 * peso from: account1 to: account2.
+	value _ 50 * peso.
+	Deposit register: value on: account1.
 	
-	self assert: (account1 hasRegistered: transfer withdraw).
-	self assert: (account1 hasRegistered: transfer deposit).! !
+	transfer _ AccountTransfer registerWith: value from: account1 to: account2.
+	
+	self assert: (account1 hasRegistered: transfer extractionLeg).
+	self assert: (account2 hasRegistered: transfer depositLeg).! !
+
+!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 23:50:05'!
+test10BalanceCorrecto
+
+	| value |
+	
+	value _ 50 * peso.
+	Deposit register: value on: account1.
+	
+	AccountTransfer registerWith: value from: account1 to: account2.
+	
+	self assert: 0 * peso equals: account1 balance.
+	self assert: value equals: account2 balance.! !
+
+!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 23:52:26'!
+test11Contrapartes
+
+	| value transfer |
+	
+	value _ 50 * peso.
+	Deposit register: value on: account1.
+	
+	transfer _ AccountTransfer registerWith: value from: account1 to: account2.
+	
+	self assert: transfer depositLeg equals: account1 transactions last counterpart.
+	self assert: transfer extractionLeg equals: account2 transactions last counterpart.! !
+
+
+!ReceptiveAccountTest methodsFor: 'tests - multiple operations' stamp: 'JGC 6/6/2022 00:08:58'!
+test12MuchasTransferencias
+	
+	Deposit register: 1000 * peso on: account1.
+	Deposit register: 100 * peso on: account2.
+	
+	AccountTransfer registerWith: 300 * peso from: account1 to: account2.
+	AccountTransfer registerWith: 200 * peso from: account1 to: account2.
+	AccountTransfer registerWith: 150 * peso from: account1 to: account2.
+	AccountTransfer registerWith: 200 * peso from: account2 to: account1.
+	
+	self assert: 550 * peso equals: account1 balance.
+	self assert: 550 * peso equals: account2 balance.! !
+
+!ReceptiveAccountTest methodsFor: 'tests - multiple operations' stamp: 'JGC 6/6/2022 00:12:50'!
+test13SeRegistraronMuchasTransferencias
+	
+	| transfer1 transfer2 |
+	Deposit register: 1000 * peso on: account1.
+	Deposit register: 100 * peso on: account2.
+	
+	transfer1 _ AccountTransfer registerWith: 300 * peso from: account1 to: account2.
+	transfer2 _ AccountTransfer registerWith: 200 * peso from: account2 to: account1.
+	
+	self assert: (account1 hasRegistered: transfer1 extractionLeg).
+	self assert: (account2 hasRegistered: transfer1 depositLeg).
+	
+	self assert: (account1 hasRegistered: transfer2 depositLeg).
+	self assert: (account2 hasRegistered: transfer2 extractionLeg).
+	
+	! !
+
+
+!ReceptiveAccountTest methodsFor: 'tests - invalid operations' stamp: 'JGC 6/6/2022 00:33:57'!
+test14NoPuedoRetirarSiNoTengoPlata
+
+	self should: [Withdraw register: 50 * peso on: account1] 
+		raise: Error
+		withExceptionDo: [:anError | self assert: AccountTransaction insufficientFundsErrorDescription equals: anError messageText ].! !
+
+!ReceptiveAccountTest methodsFor: 'tests - invalid operations' stamp: 'JGC 6/6/2022 00:33:54'!
+test15NoPuedoTransferirSiNoTengoPlata
+
+	self should: [AccountTransfer registerWith: 50 * peso from: account1 to: account2 ] 
+		raise: Error
+		withExceptionDo: [:anError | self assert: AccountTransaction insufficientFundsErrorDescription equals: anError messageText ].! !
+
+!ReceptiveAccountTest methodsFor: 'tests - invalid operations' stamp: 'JGC 6/6/2022 00:39:27'!
+test16NoPuedoDepositarUnObjetoInvalido
+
+	self should: [ Deposit register: #gallinas on: account1 ] 
+		raise: Error
+		withExceptionDo: [:anError | self assert: AccountTransaction cannotOperateWithInvalidValueErrorDescription equals: anError messageText ].! !
+
+!ReceptiveAccountTest methodsFor: 'tests - invalid operations' stamp: 'JGC 6/6/2022 00:39:53'!
+test17NoPuedoTransferirUnObjetoInvalido
+
+	self should: [ AccountTransfer registerWith: #koalas from: account1 to: account2 ] 
+		raise: Error
+		withExceptionDo: [ :anError | self assert: AccountTransaction cannotOperateWithInvalidValueErrorDescription equals: anError messageText ].! !
 
 
 !ReceptiveAccountTest methodsFor: 'setUp' stamp: 'sm 6/5/2022 19:53:12'!
@@ -135,13 +230,49 @@ initializeFor: aValue
 AccountTransaction class
 	instanceVariableNames: ''!
 
-!AccountTransaction class methodsFor: 'instance creation' stamp: 'NR 10/17/2019 03:22:00'!
-register: aValue on: account
+!AccountTransaction class methodsFor: 'error description' stamp: 'JGC 6/6/2022 00:35:10'!
+cannotOperateWithInvalidValueErrorDescription
+
+	^ 'value is invalid'.! !
+
+!AccountTransaction class methodsFor: 'error description' stamp: 'JGC 6/6/2022 00:18:10'!
+insufficientFundsErrorDescription
+
+	^ 'insufficient funds in account'.! !
+
+
+!AccountTransaction class methodsFor: 'testing' stamp: 'JGC 6/6/2022 00:40:51'!
+canPerformTransactionOn: anAccount withValue: aValue 
+
+	self subclassResponsibility! !
+
+
+!AccountTransaction class methodsFor: 'asserting' stamp: 'JGC 6/6/2022 00:41:18'!
+assertCanOperateOn: anAccount withValue: aValue
+
+	^ (self canPerformTransactionOn: anAccount withValue: aValue) ifFalse: [ self error: self insufficientFundsErrorDescription ]! !
+
+!AccountTransaction class methodsFor: 'asserting' stamp: 'JGC 6/6/2022 00:38:27'!
+assertValueIsValid: aValue
+
+	^ (aValue isKindOf: SimpleMeasure) ifFalse: [ self error: self cannotOperateWithInvalidValueErrorDescription ]! !
+
+
+!AccountTransaction class methodsFor: 'instance creation' stamp: 'JGC 6/5/2022 23:59:53'!
+for: aValue
+
+	^ self new initializeFor: aValue ! !
+
+!AccountTransaction class methodsFor: 'instance creation' stamp: 'JGC 6/6/2022 00:37:04'!
+register: aValue on: anAccount
 
 	| transaction |
 	
+	self assertValueIsValid: aValue.
+	self assertCanOperateOn: anAccount withValue: aValue.
+	
 	transaction := self for: aValue.
-	account register: transaction.
+	anAccount register: transaction.
 		
 	^ transaction! !
 
@@ -164,10 +295,78 @@ alter: aBalance
 Deposit class
 	instanceVariableNames: ''!
 
-!Deposit class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:38'!
-for: aValue
+!Deposit class methodsFor: 'testing' stamp: 'JGC 6/6/2022 00:40:57'!
+canPerformTransactionOn: anAccount withValue: aValue 
 
-	^ self new initializeFor: aValue ! !
+	^ true.! !
+
+
+!classDefinition: #DepositLeg category: 'ServiciosFinancieros-Ejercicio'!
+AccountTransaction subclass: #DepositLeg
+	instanceVariableNames: 'counterpart'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!DepositLeg methodsFor: 'as yet unclassified' stamp: 'JGC 6/5/2022 23:54:25'!
+alter: aBalance
+
+	^ aBalance + value.! !
+
+!DepositLeg methodsFor: 'as yet unclassified' stamp: 'JGC 6/5/2022 23:57:43'!
+associateCounterpart: aTransactionLeg
+
+	counterpart _ aTransactionLeg.! !
+
+!DepositLeg methodsFor: 'as yet unclassified' stamp: 'JGC 6/5/2022 23:54:49'!
+counterpart
+	
+	^ counterpart.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'DepositLeg class' category: 'ServiciosFinancieros-Ejercicio'!
+DepositLeg class
+	instanceVariableNames: ''!
+
+!DepositLeg class methodsFor: 'testing' stamp: 'JGC 6/6/2022 00:41:00'!
+canPerformTransactionOn: anAccount withValue: aValue 
+
+	^ true.! !
+
+
+!classDefinition: #ExtractionLeg category: 'ServiciosFinancieros-Ejercicio'!
+AccountTransaction subclass: #ExtractionLeg
+	instanceVariableNames: 'counterpart'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!ExtractionLeg methodsFor: 'as yet unclassified' stamp: 'JGC 6/5/2022 23:54:33'!
+alter: aBalance
+
+	^ aBalance - value.! !
+
+!ExtractionLeg methodsFor: 'as yet unclassified' stamp: 'JGC 6/5/2022 23:57:33'!
+associateCounterpart: aTransactionLeg
+
+	counterpart _ aTransactionLeg.! !
+
+!ExtractionLeg methodsFor: 'as yet unclassified' stamp: 'JGC 6/5/2022 23:55:17'!
+counterpart
+
+	^ counterpart.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ExtractionLeg class' category: 'ServiciosFinancieros-Ejercicio'!
+ExtractionLeg class
+	instanceVariableNames: ''!
+
+!ExtractionLeg class methodsFor: 'testing' stamp: 'JGC 6/6/2022 00:40:51'!
+canPerformTransactionOn: anAccount withValue: aValue 
+
+	^ (anAccount balance < aValue) not.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
@@ -188,24 +387,40 @@ alter: aBalance
 Withdraw class
 	instanceVariableNames: ''!
 
-!Withdraw class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:33'!
-for: aValue
+!Withdraw class methodsFor: 'testing' stamp: 'JGC 6/6/2022 00:41:08'!
+canPerformTransactionOn: anAccount withValue: aValue 
 
-	^ self new initializeFor: aValue ! !
+	^ (anAccount balance < aValue) not.! !
 
 
 !classDefinition: #AccountTransfer category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #AccountTransfer
-	instanceVariableNames: 'valueToTransfer value'
+	instanceVariableNames: 'valueToTransfer value extractionLeg depositLeg'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!AccountTransfer methodsFor: 'initialization' stamp: 'JGC 6/5/2022 21:10:53'!
-initializeWithValue: aValueToTransfer 
+!AccountTransfer methodsFor: 'initialization' stamp: 'JGC 6/5/2022 23:59:12'!
+initializeWithValue: aValueToTransfer from: aTransferringAccount to: aReceivingAccount   
 
-	value := aValueToTransfer.! !
+	value _ aValueToTransfer.
+	
+	extractionLeg _ ExtractionLeg register: value on: aTransferringAccount.
+	depositLeg _ DepositLeg register: value on: aReceivingAccount.
+	
+	extractionLeg associateCounterpart: depositLeg.
+	depositLeg associateCounterpart: extractionLeg.! !
 
+
+!AccountTransfer methodsFor: 'accessing' stamp: 'JGC 6/5/2022 23:46:27'!
+depositLeg
+	
+	^ depositLeg.! !
+
+!AccountTransfer methodsFor: 'accessing' stamp: 'JGC 6/5/2022 23:46:18'!
+extractionLeg
+
+	^ extractionLeg.! !
 
 !AccountTransfer methodsFor: 'accessing' stamp: 'JGC 6/5/2022 21:14:30'!
 value
@@ -218,10 +433,10 @@ value
 AccountTransfer class
 	instanceVariableNames: ''!
 
-!AccountTransfer class methodsFor: 'instance creation' stamp: 'JGC 6/5/2022 21:10:34'!
-registerWith: aValueToTransfer from: aReceivingAccount to: aTransferringAccount
+!AccountTransfer class methodsFor: 'instance creation' stamp: 'JGC 6/5/2022 23:46:05'!
+registerWith: aValueToTransfer from: aTransferringAccount to: aReceivingAccount
 
-	^self new initializeWithValue: aValueToTransfer.! !
+	^ self new initializeWithValue: aValueToTransfer from: aTransferringAccount to: aReceivingAccount.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
