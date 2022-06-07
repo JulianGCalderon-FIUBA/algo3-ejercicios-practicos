@@ -77,7 +77,7 @@ test07AccountKnowsItsTransactions
 ! !
 
 
-!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 23:49:00'!
+!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'sm 6/6/2022 20:31:01'!
 test08RegistraConValor
 
 	| transfer value |
@@ -85,13 +85,13 @@ test08RegistraConValor
 	value _ 50 * peso.
 	Deposit register: value on: account1.
 	
-	transfer _ AccountTransfer registerWith: value from: account1 to: account2.
+	transfer _ TransferBetweenTwoAccounts registerWith: value from: account1 to: account2.
 	
 	self assert: value equals: transfer value.
 	
 	! !
 
-!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 23:48:55'!
+!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'sm 6/6/2022 20:31:01'!
 test09RegistraEnLasCuentas
 
 	| transfer value |
@@ -99,12 +99,12 @@ test09RegistraEnLasCuentas
 	value _ 50 * peso.
 	Deposit register: value on: account1.
 	
-	transfer _ AccountTransfer registerWith: value from: account1 to: account2.
+	transfer _ TransferBetweenTwoAccounts registerWith: value from: account1 to: account2.
 	
 	self assert: (account1 hasRegistered: transfer extractionLeg).
 	self assert: (account2 hasRegistered: transfer depositLeg).! !
 
-!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 23:50:05'!
+!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'sm 6/6/2022 20:31:01'!
 test10BalanceCorrecto
 
 	| value |
@@ -112,12 +112,12 @@ test10BalanceCorrecto
 	value _ 50 * peso.
 	Deposit register: value on: account1.
 	
-	AccountTransfer registerWith: value from: account1 to: account2.
+	TransferBetweenTwoAccounts registerWith: value from: account1 to: account2.
 	
 	self assert: 0 * peso equals: account1 balance.
 	self assert: value equals: account2 balance.! !
 
-!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'JGC 6/5/2022 23:52:26'!
+!ReceptiveAccountTest methodsFor: 'tests - transfers' stamp: 'sm 6/6/2022 20:31:01'!
 test11Contrapartes
 
 	| value transfer |
@@ -125,35 +125,35 @@ test11Contrapartes
 	value _ 50 * peso.
 	Deposit register: value on: account1.
 	
-	transfer _ AccountTransfer registerWith: value from: account1 to: account2.
+	transfer _ TransferBetweenTwoAccounts registerWith: value from: account1 to: account2.
 	
 	self assert: transfer depositLeg equals: account1 transactions last counterpart.
 	self assert: transfer extractionLeg equals: account2 transactions last counterpart.! !
 
 
-!ReceptiveAccountTest methodsFor: 'tests - multiple operations' stamp: 'JGC 6/6/2022 00:08:58'!
+!ReceptiveAccountTest methodsFor: 'tests - multiple operations' stamp: 'sm 6/6/2022 20:31:01'!
 test12MuchasTransferencias
 	
 	Deposit register: 1000 * peso on: account1.
 	Deposit register: 100 * peso on: account2.
 	
-	AccountTransfer registerWith: 300 * peso from: account1 to: account2.
-	AccountTransfer registerWith: 200 * peso from: account1 to: account2.
-	AccountTransfer registerWith: 150 * peso from: account1 to: account2.
-	AccountTransfer registerWith: 200 * peso from: account2 to: account1.
+	TransferBetweenTwoAccounts registerWith: 300 * peso from: account1 to: account2.
+	TransferBetweenTwoAccounts registerWith: 200 * peso from: account1 to: account2.
+	TransferBetweenTwoAccounts registerWith: 150 * peso from: account1 to: account2.
+	TransferBetweenTwoAccounts registerWith: 200 * peso from: account2 to: account1.
 	
 	self assert: 550 * peso equals: account1 balance.
 	self assert: 550 * peso equals: account2 balance.! !
 
-!ReceptiveAccountTest methodsFor: 'tests - multiple operations' stamp: 'JGC 6/6/2022 00:12:50'!
+!ReceptiveAccountTest methodsFor: 'tests - multiple operations' stamp: 'sm 6/6/2022 20:31:01'!
 test13SeRegistraronMuchasTransferencias
 	
 	| transfer1 transfer2 |
 	Deposit register: 1000 * peso on: account1.
 	Deposit register: 100 * peso on: account2.
 	
-	transfer1 _ AccountTransfer registerWith: 300 * peso from: account1 to: account2.
-	transfer2 _ AccountTransfer registerWith: 200 * peso from: account2 to: account1.
+	transfer1 _ TransferBetweenTwoAccounts registerWith: 300 * peso from: account1 to: account2.
+	transfer2 _ TransferBetweenTwoAccounts registerWith: 200 * peso from: account2 to: account1.
 	
 	self assert: (account1 hasRegistered: transfer1 extractionLeg).
 	self assert: (account2 hasRegistered: transfer1 depositLeg).
@@ -171,10 +171,10 @@ test14NoPuedoRetirarSiNoTengoPlata
 		raise: Error
 		withExceptionDo: [:anError | self assert: AccountTransaction insufficientFundsErrorDescription equals: anError messageText ].! !
 
-!ReceptiveAccountTest methodsFor: 'tests - invalid operations' stamp: 'JGC 6/6/2022 00:33:54'!
+!ReceptiveAccountTest methodsFor: 'tests - invalid operations' stamp: 'sm 6/6/2022 20:31:01'!
 test15NoPuedoTransferirSiNoTengoPlata
 
-	self should: [AccountTransfer registerWith: 50 * peso from: account1 to: account2 ] 
+	self should: [TransferBetweenTwoAccounts registerWith: 50 * peso from: account1 to: account2 ] 
 		raise: Error
 		withExceptionDo: [:anError | self assert: AccountTransaction insufficientFundsErrorDescription equals: anError messageText ].! !
 
@@ -185,19 +185,138 @@ test16NoPuedoDepositarUnObjetoInvalido
 		raise: Error
 		withExceptionDo: [:anError | self assert: AccountTransaction cannotOperateWithInvalidValueErrorDescription equals: anError messageText ].! !
 
-!ReceptiveAccountTest methodsFor: 'tests - invalid operations' stamp: 'JGC 6/6/2022 00:39:53'!
+!ReceptiveAccountTest methodsFor: 'tests - invalid operations' stamp: 'sm 6/6/2022 20:31:01'!
 test17NoPuedoTransferirUnObjetoInvalido
 
-	self should: [ AccountTransfer registerWith: #koalas from: account1 to: account2 ] 
+	self should: [ TransferBetweenTwoAccounts registerWith: #koalas from: account1 to: account2 ] 
 		raise: Error
 		withExceptionDo: [ :anError | self assert: AccountTransaction cannotOperateWithInvalidValueErrorDescription equals: anError messageText ].! !
 
 
-!ReceptiveAccountTest methodsFor: 'setUp' stamp: 'sm 6/5/2022 19:53:12'!
+!ReceptiveAccountTest methodsFor: 'tests - portfolio' stamp: 'sm 6/6/2022 21:17:42'!
+test18SeCreaConCuentasCorrectas
+
+	| portfolio | 
+	
+	portfolio := Portfolio createWithAccounts: {account1 . account2}.
+	
+	self assert: (portfolio includes: account1).
+	self assert: (portfolio includes: account2).
+	
+	self assert: 2 equals: portfolio numberOfAccounts.! !
+
+!ReceptiveAccountTest methodsFor: 'tests - portfolio' stamp: 'sm 6/6/2022 20:55:13'!
+test19ElBalanceEsElCorrecto
+
+	| portfolio value | 
+	value _ 50 * peso.
+	
+	Deposit register: value on: account1.
+	
+	portfolio := Portfolio createWithAccounts: {account1 . account2}.
+	
+	self assert: value equals: portfolio balance.
+	! !
+
+!ReceptiveAccountTest methodsFor: 'tests - portfolio' stamp: 'sm 6/6/2022 20:56:30'!
+test20ElBalanceEsElCorrectoSiDepositoLuegoDeCrear
+
+	| portfolio value | 
+	value _ 50 * peso.
+	
+	portfolio := Portfolio createWithAccounts: {account1 . account2}.
+	
+	Deposit register: value on: account2.
+	
+	self assert: value equals: portfolio balance.
+	! !
+
+!ReceptiveAccountTest methodsFor: 'tests - portfolio' stamp: 'sm 6/6/2022 20:58:04'!
+test21ElPortfolioConoceLasTransacciones
+
+	| portfolio value deposit| 
+	value _ 50 * peso.
+	
+	portfolio := Portfolio createWithAccounts: {account1 . account2}.
+	
+	deposit := Deposit register: value on: account2.
+	
+	self assert: (portfolio hasRegistered: deposit).
+	! !
+
+!ReceptiveAccountTest methodsFor: 'tests - portfolio' stamp: 'sm 6/6/2022 21:01:04'!
+test22ElPortfolioConoceLasTransferencias
+
+	| portfolio value transfer| 
+	value _ 50 * peso.
+	
+	Deposit register: value on: account1.
+	
+	portfolio := Portfolio createWithAccounts: {account1 . account2}.
+	
+	transfer := TransferBetweenTwoAccounts registerWith: value from: account1 to: account2. 
+	
+	self assert: (portfolio hasRegistered: transfer extractionLeg).
+	self assert: (portfolio hasRegistered: transfer depositLeg).
+	! !
+
+!ReceptiveAccountTest methodsFor: 'tests - portfolio' stamp: 'sm 6/6/2022 21:05:35'!
+test23ElPortfolioConoceTodasLasTransaccionesDeUnaCuenta
+
+	| portfolio | 
+	Deposit register: 50 * peso on: account1.
+	Deposit register: 100 * peso on: account1.
+	Withdraw register: 40 * peso on: account1.
+	
+	portfolio := Portfolio createWithAccounts: {account1 . account2}.
+	
+	self assert: account1 transactions equals: (portfolio accountTransactions: account1).
+	! !
+
+!ReceptiveAccountTest methodsFor: 'tests - portfolio' stamp: 'sm 6/6/2022 21:15:19'!
+test24SePuedeCrearUnPortfolioConPortfolios
+
+	| portfolio1 portfolio2 account3 account4 value | 
+	
+	value := 100 * peso.
+	
+	account3 := ReceptiveAccount new.
+	account4 := ReceptiveAccount new.
+		
+	portfolio1 := Portfolio createWithAccounts: {account1 . account2}.
+	portfolio2 := Portfolio createWithAccounts: {account3 . account4 . portfolio1}.
+	
+	Deposit register: value on: account1.
+	Deposit register: value on: account4.
+	
+	self assert: (value + value) equals: portfolio2 balance.
+	
+	
+	! !
+
+!ReceptiveAccountTest methodsFor: 'tests - portfolio' stamp: 'sm 6/6/2022 21:18:51'!
+test25UnPortfolioConoceUnaCuentaDentroDeOtro
+
+	| portfolio1 portfolio2 account3 account4 | 
+	
+	account3 := ReceptiveAccount new.
+	account4 := ReceptiveAccount new.
+		
+	portfolio1 := Portfolio createWithAccounts: {account1 . account2}.
+	portfolio2 := Portfolio createWithAccounts: {account3 . account4 . portfolio1}.
+	
+	self assert: (portfolio2 includes: account1).
+	
+	
+	! !
+
+
+!ReceptiveAccountTest methodsFor: 'setUp' stamp: 'sm 6/6/2022 21:12:33'!
 setUp
 
 	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.! !
+	account2 := ReceptiveAccount new.
+	! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -393,50 +512,65 @@ canPerformTransactionOn: anAccount withValue: aValue
 	^ (anAccount balance < aValue) not.! !
 
 
-!classDefinition: #AccountTransfer category: 'ServiciosFinancieros-Ejercicio'!
-Object subclass: #AccountTransfer
-	instanceVariableNames: 'valueToTransfer value extractionLeg depositLeg'
+!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Portfolio
+	instanceVariableNames: 'accounts'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!AccountTransfer methodsFor: 'initialization' stamp: 'JGC 6/5/2022 23:59:12'!
-initializeWithValue: aValueToTransfer from: aTransferringAccount to: aReceivingAccount   
-
-	value _ aValueToTransfer.
+!Portfolio methodsFor: 'initialization' stamp: 'sm 6/6/2022 20:46:29'!
+initializeWithAccounts: accountsToGroup 
 	
-	extractionLeg _ ExtractionLeg register: value on: aTransferringAccount.
-	depositLeg _ DepositLeg register: value on: aReceivingAccount.
+	accounts := OrderedCollection newFrom: accountsToGroup.! !
+
+
+!Portfolio methodsFor: 'main protocol' stamp: 'sm 6/6/2022 21:15:42'!
+accountTransactions: aReceptiveAccount 
 	
-	extractionLeg associateCounterpart: depositLeg.
-	depositLeg associateCounterpart: extractionLeg.! !
+	accounts detect: [:anAccount | anAccount = aReceptiveAccount ] 
+			ifFound: [ :anAccount | ^ anAccount transactions ]
+			ifNone: [ self class error: self class accountIsNotInPortfolioErrorDescription ].! !
 
-
-!AccountTransfer methodsFor: 'accessing' stamp: 'JGC 6/5/2022 23:46:27'!
-depositLeg
+!Portfolio methodsFor: 'main protocol' stamp: 'sm 6/6/2022 20:55:44'!
+balance
 	
-	^ depositLeg.! !
+	^ accounts sum: [:anAccount | anAccount balance].! !
 
-!AccountTransfer methodsFor: 'accessing' stamp: 'JGC 6/5/2022 23:46:18'!
-extractionLeg
+!Portfolio methodsFor: 'main protocol' stamp: 'sm 6/6/2022 20:53:05'!
+numberOfAccounts
+	
+	^ accounts size.! !
 
-	^ extractionLeg.! !
 
-!AccountTransfer methodsFor: 'accessing' stamp: 'JGC 6/5/2022 21:14:30'!
-value
+!Portfolio methodsFor: 'testing' stamp: 'sm 6/6/2022 20:58:50'!
+hasRegistered: aTransaction 
+	
+	^ accounts anySatisfy: [:anAccount | anAccount hasRegistered: aTransaction].! !
 
-	^ value.! !
+!Portfolio methodsFor: 'testing' stamp: 'sm 6/6/2022 21:27:10'!
+includes: aReceptiveAccount 
+	
+	^ accounts anySatisfy: [:anAccount | (anAccount isKindOf: Portfolio) 
+		ifTrue: [ anAccount includes: aReceptiveAccount ]
+		ifFalse: [ accounts includes: aReceptiveAccount ] ].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'AccountTransfer class' category: 'ServiciosFinancieros-Ejercicio'!
-AccountTransfer class
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
 	instanceVariableNames: ''!
 
-!AccountTransfer class methodsFor: 'instance creation' stamp: 'JGC 6/5/2022 23:46:05'!
-registerWith: aValueToTransfer from: aTransferringAccount to: aReceivingAccount
+!Portfolio class methodsFor: 'instance creation' stamp: 'sm 6/6/2022 20:42:20'!
+createWithAccounts: accountsToGroup 
+	
+	^self new initializeWithAccounts: accountsToGroup.! !
 
-	^ self new initializeWithValue: aValueToTransfer from: aTransferringAccount to: aReceivingAccount.! !
+
+!Portfolio class methodsFor: 'error descriptions' stamp: 'sm 6/6/2022 21:09:58'!
+accountIsNotInPortfolioErrorDescription
+
+	^ 'account is not in portfolio'.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -473,3 +607,49 @@ register: aTransaction
 transactions 
 
 	^ transactions copy! !
+
+
+!classDefinition: #TransferBetweenTwoAccounts category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #TransferBetweenTwoAccounts
+	instanceVariableNames: 'valueToTransfer value extractionLeg depositLeg'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferBetweenTwoAccounts methodsFor: 'initialization' stamp: 'JGC 6/5/2022 23:59:12'!
+initializeWithValue: aValueToTransfer from: aTransferringAccount to: aReceivingAccount   
+
+	value _ aValueToTransfer.
+	
+	extractionLeg _ ExtractionLeg register: value on: aTransferringAccount.
+	depositLeg _ DepositLeg register: value on: aReceivingAccount.
+	
+	extractionLeg associateCounterpart: depositLeg.
+	depositLeg associateCounterpart: extractionLeg.! !
+
+
+!TransferBetweenTwoAccounts methodsFor: 'accessing' stamp: 'JGC 6/5/2022 23:46:27'!
+depositLeg
+	
+	^ depositLeg.! !
+
+!TransferBetweenTwoAccounts methodsFor: 'accessing' stamp: 'JGC 6/5/2022 23:46:18'!
+extractionLeg
+
+	^ extractionLeg.! !
+
+!TransferBetweenTwoAccounts methodsFor: 'accessing' stamp: 'JGC 6/5/2022 21:14:30'!
+value
+
+	^ value.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferBetweenTwoAccounts class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferBetweenTwoAccounts class
+	instanceVariableNames: ''!
+
+!TransferBetweenTwoAccounts class methodsFor: 'instance creation' stamp: 'JGC 6/5/2022 23:46:05'!
+registerWith: aValueToTransfer from: aTransferringAccount to: aReceivingAccount
+
+	^ self new initializeWithValue: aValueToTransfer from: aTransferringAccount to: aReceivingAccount.! !
