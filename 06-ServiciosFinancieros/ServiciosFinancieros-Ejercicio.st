@@ -17,43 +17,35 @@ test01TransferKnowsItsValue
 	
 	! !
 
-!AccountsTransferTest methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:41:56'!
-test02DepositLegsIsRegisteredInTransferredAccount
+!AccountsTransferTest methodsFor: 'tests' stamp: 'sm 6/7/2022 23:10:34'!
+test02DepositLegsIsRegisteredInReceivingAccount
 
-	| transfer |
-	
-	transfer _ AccountsTransfer registerWith: 50 * peso from: account1 to: account2.
-	
-	self assert: (account2 hasRegistered: transfer depositLeg).! !
+	self assertAccount: account2 registered: #depositLeg afterTransferringFrom: account1 to: account2.! !
 
-!AccountsTransferTest methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:42:12'!
+!AccountsTransferTest methodsFor: 'tests' stamp: 'sm 6/7/2022 23:10:17'!
 test03ExtractionLegsIsRegisteredInTransferringAccount
 
-	| transfer |
-	
-	transfer _ AccountsTransfer registerWith: 50 * peso from: account1 to: account2.
-	
-	self assert: (account1 hasRegistered: transfer extractionLeg).! !
+	self assertAccount: account1 registered: #extractionLeg afterTransferringFrom: account1 to: account2.! !
 
-!AccountsTransferTest methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:42:02'!
+!AccountsTransferTest methodsFor: 'tests' stamp: 'sm 6/7/2022 23:20:57'!
 test04TransferDecreasesBalanceFromTransferringAccount
 
 	| value |
 	value _ 50 * peso.
 	
-	AccountsTransfer registerWith: value from: account1 to: account2.
-	
-	self assert: value negated equals: account1 balance.! !
+	self assertBalanceInAccount: account1 equals: value negated
+		afterTransferring: value from: account1 to: account2.
+	! !
 
-!AccountsTransferTest methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:42:05'!
-test05TransferIncreasesBalanceFromTransferredAccount
+!AccountsTransferTest methodsFor: 'tests' stamp: 'sm 6/7/2022 23:21:37'!
+test05TransferIncreasesBalanceFromReceivingAccount
 
 	| value |
 	value _ 50 * peso.
 	
-	AccountsTransfer registerWith: value from: account1 to: account2.
-	
-	self assert: value equals: account2 balance.! !
+	self assertBalanceInAccount: account2 equals: value 
+		afterTransferring: value from: account1 to: account2.
+	! !
 
 
 !AccountsTransferTest methodsFor: 'setup' stamp: 'JGC 6/7/2022 20:14:47'!
@@ -64,182 +56,144 @@ setUp
 	! !
 
 
+!AccountsTransferTest methodsFor: 'asserts' stamp: 'sm 6/7/2022 23:09:46'!
+assertAccount: anAccount registered: aTransferCollaborator afterTransferringFrom: aTransferringAccount to: aReceivingAccount 
+	
+	| transfer |
+	
+	transfer _ AccountsTransfer registerWith: 50 * peso from: aTransferringAccount to: aReceivingAccount.
+	
+	self assert: (anAccount hasRegistered: (aTransferCollaborator asMessage sendTo: transfer)).! !
+
+!AccountsTransferTest methodsFor: 'asserts' stamp: 'sm 6/7/2022 23:19:31'!
+assertBalanceInAccount: anAccount equals: aBalance afterTransferring: anAmountToTransfer from: aTransferringAccount to: aReceivingAccount
+
+	AccountsTransfer registerWith: anAmountToTransfer from: aTransferringAccount to: aReceivingAccount.
+
+	self assert: aBalance equals: anAccount balance.! !
+
 
 !classDefinition: #PortfolioTests category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #PortfolioTests
-	instanceVariableNames: 'account1 account2 account3'
+	instanceVariableNames: 'account1 account2 account3 portfolioWithOneAccount portfolioWithTwoAccounts portfolioWithInnerPortfolio portfolioWithInnerPortfolioAndAccount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortfolioTests methodsFor: 'setup' stamp: 'JGC 6/7/2022 20:53:14'!
+!PortfolioTests methodsFor: 'setup' stamp: 'sm 6/7/2022 23:34:30'!
 setUp
 
 	account1 _ ReceptiveAccount new.
 	account2 _ ReceptiveAccount new.
-	account3 _ ReceptiveAccount new.! !
+	account3 _ ReceptiveAccount new.
+	
+	Deposit register: 50 * peso on: account1.
+	Deposit register: 50 * peso on: account2.
+	Deposit register: 50 * peso on: account3.
+	
+	portfolioWithOneAccount _ Portfolio createWithEntities: {account1}.
+	portfolioWithTwoAccounts _ Portfolio createWithEntities: {account1. account2}.
+	portfolioWithInnerPortfolio _ Portfolio createWithEntities: {portfolioWithTwoAccounts}.
+	portfolioWithInnerPortfolioAndAccount _ Portfolio createWithEntities: {portfolioWithTwoAccounts. account3}.
+! !
 
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:45:15'!
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:34:47'!
 test01PortfolioWithOneAccountHasSameBalanceAsAccount
 
-	| portfolio value |
-	 
-	value _ 50 * peso.
-	Deposit register: value on: account1.
-	
-	portfolio := Portfolio createWithEntities: {account1.}.
-	
-	self assert: value equals: portfolio balance.
+	self assert: account1 balance equals: portfolioWithOneAccount balance.
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:55:25'!
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:35:09'!
 test02PortfolioWithTwoAccountsSumsBalanceFromBothAccounts
-
-	| portfolio value |
-	 
-	value _ 50 * peso.
-	Deposit register: value on: account1.
-	Deposit register: value on: account2.
 	
-	portfolio := Portfolio createWithEntities: {account1. account2}.
-	
-	self assert: value + value equals: portfolio balance.
+	self assert: account1 balance + account2 balance equals: portfolioWithTwoAccounts balance.
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 21:01:54'!
-test03PortfolioWithAPortfolioWithTwoAccountsSumsBalanceFromBothAccounts
-
-	| portfolio value innerPortfolio |
-	 
-	value _ 50 * peso.
-	Deposit register: value on: account1.
-	Deposit register: value on: account2.
-	
-	innerPortfolio _ Portfolio createWithEntities: {account1. account2}.
-	portfolio _ Portfolio createWithEntities: {innerPortfolio}.
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:35:18'!
+test03PortfolioWithInnerPortfolioSumsBalanceFromInnerPortfolio
 		
-	self assert: innerPortfolio balance equals: portfolio balance.
+	self assert: portfolioWithTwoAccounts balance equals: portfolioWithInnerPortfolio balance.
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 21:01:22'!
-test04PortfolioWithAPortfolioWithTwoAccountsAndAnAccountSumsBalanceFromAllThreeAccounts
-
-	| portfolio value innerPortfolio |
-	 
-	value _ 50 * peso.
-	Deposit register: value on: account1.
-	Deposit register: value on: account2.
-	Deposit register: value on: account3.
-	
-	innerPortfolio _ Portfolio createWithEntities: {account1. account2}.
-	portfolio _ Portfolio createWithEntities: {innerPortfolio. account3}.
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:33:04'!
+test04PortfolioWithInnerPortfolioAndAnAccountSumsBalanceFromAllEntities
 		
-	self assert: innerPortfolio balance + value equals: portfolio balance.
+	self assert: portfolioWithTwoAccounts balance + account3 balance equals: portfolioWithInnerPortfolioAndAccount balance.
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:53:41'!
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:39:02'!
 test05PortfolioWithOneAccountKnowsRegisteredTransactions
 
-	| portfolio deposit| 
+	| deposit | 
 	
 	deposit := Deposit register: 50 * peso on: account1.
 	
-	portfolio := Portfolio createWithEntities: {account1}.
-	
-	self assert: (portfolio hasRegistered: deposit).
+	self assert: (self entity: portfolioWithOneAccount hasRegistered: {deposit}).
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:54:20'!
-test06PortfolioWithPortfolioWithTwoAccountsKnowsRegisteredTransactions
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:39:42'!
+test06PortfolioWithTwoAccountsKnowsRegisteredTransactions
 
-	| innerPortfolio deposit1 deposit2 portfolio | 
+	| deposit1 deposit2 | 
 	
 	deposit1 _ Deposit register: 50 * peso on: account1.
 	deposit2 _ Deposit register: 50 * peso on: account2.
 	
-	innerPortfolio _ Portfolio createWithEntities: {account1. account2}.
-	portfolio _  Portfolio createWithEntities: {innerPortfolio}.
+	self assert: (self entity: portfolioWithTwoAccounts hasRegistered: {deposit1. deposit2}).! !
+
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:39:53'!
+test07PortfolioWithInnerPortfolioKnowsRegisteredTransactions
+
+	| deposit1 deposit2 | 
 	
-	self assert: (portfolio hasRegistered: deposit1).
-	self assert: (portfolio hasRegistered: deposit2).
-	! !
+	deposit1 _ Deposit register: 50 * peso on: account1.
+	deposit2 _ Deposit register: 50 * peso on: account2.
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:55:13'!
-test07PortfolioWithAPortfolioWithTwoAccountsAndAnAccountKnowsRegisteredTransactions
+	self assert: (self entity: portfolioWithInnerPortfolio hasRegistered: {deposit1. deposit2}).! !
 
-	| portfolio value innerPortfolio deposit1 deposit2 deposit3 |
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:40:12'!
+test08PortfolioWithInnerPortfolioAndAnAccountKnowsRegisteredTransactions
+
+	| value deposit1 deposit2 deposit3 |
 	 
 	value _ 50 * peso.
 	deposit1 _ Deposit register: value on: account1.
 	deposit2 _ Deposit register: value on: account2.
 	deposit3 _ Deposit register: value on: account3.
-	
-	innerPortfolio _ Portfolio createWithEntities: {account1. account2}.
-	portfolio _ Portfolio createWithEntities: {innerPortfolio. account3}.
 		
-	self assert: (portfolio hasRegistered: deposit1).
-	self assert: (portfolio hasRegistered: deposit2).
-	self assert: (portfolio hasRegistered: deposit3).
+	self assert: (self entity: portfolioWithInnerPortfolioAndAccount hasRegistered: {deposit1. deposit2. deposit3}).
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:58:48'!
-test08PortfolioWithOneAccountCanAccessAccountTransactions
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:35:49'!
+test09PortfolioWithOneAccountCanAccessAccountTransactions
 
-	| portfolio value  |
-	 
-	value _ 50 * peso.
-	Deposit register: value on: account1.
-	
-	portfolio _ Portfolio createWithEntities: {account1}.
-		
-	self assert: account1 transactions equals: portfolio transactions.
+	self assert: account1 transactions equals: portfolioWithOneAccount transactions.
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 20:59:33'!
-test09PortfolioWithTwoAccountsCanAccessAccountTransactions
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:35:53'!
+test10PortfolioWithTwoAccountsCanAccessAccountTransactions
 
-	| portfolio value  |
-	 
-	value _ 50 * peso.
-	Deposit register: value on: account1.
-	Deposit register: value on: account2.
-	
-	portfolio _ Portfolio createWithEntities: {account1. account2}.
-		
-	self assert: account1 transactions, account2 transactions equals: portfolio transactions.
+	self assert: account1 transactions, account2 transactions equals: portfolioWithTwoAccounts transactions.
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 21:01:44'!
-test10PortfolioWithPortfolioWithTwoAccountsCanAccessAccountTransactions
-
-	| portfolio value  innerPortfolio |
-	 
-	value _ 50 * peso.
-	Deposit register: value on: account1.
-	Deposit register: value on: account2.
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:35:58'!
+test11PortfolioWithInnerPortfolioCanAccessAccountTransactions
 	
-	innerPortfolio _ Portfolio createWithEntities: {account1. account2}.
-	portfolio _ Portfolio createWithEntities: {innerPortfolio}.
-		
-	self assert: innerPortfolio transactions equals: portfolio transactions.
+	self assert: portfolioWithTwoAccounts transactions equals: portfolioWithInnerPortfolio transactions.
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/7/2022 21:01:32'!
-test11PortfolioWithPortfolioWithTwoAccountsAndAnAccountCanAccessAccountTransactions
+!PortfolioTests methodsFor: 'tests' stamp: 'sm 6/7/2022 23:36:03'!
+test12PortfolioWithInnerPortfolioAndAnAccountCanAccessAccountTransactions
 
-	| portfolio value  innerPortfolio |
-	 
-	value _ 50 * peso.
-	Deposit register: value on: account1.
-	Deposit register: value on: account2.
-	Deposit register: value on: account3.
-	
-	innerPortfolio _ Portfolio createWithEntities: {account1. account2}.
-	portfolio _ Portfolio createWithEntities: {innerPortfolio. account3}.
-		
-	self assert: innerPortfolio transactions, account3 transactions equals: portfolio transactions.
+	self assert: portfolioWithTwoAccounts transactions, account3 transactions equals: portfolioWithInnerPortfolioAndAccount transactions.
 	! !
+
+
+!PortfolioTests methodsFor: 'testing' stamp: 'sm 6/7/2022 23:38:23'!
+entity: anEntity hasRegistered: transactions
+
+	^ transactions allSatisfy: [ :aTransaction | anEntity hasRegistered: aTransaction ].! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
