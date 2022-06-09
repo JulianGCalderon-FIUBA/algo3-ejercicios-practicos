@@ -124,17 +124,17 @@ test04PortfolioWithInnerPortfolioAndAnAccountSumsBalanceFromAllEntities
 	self assert: portfolioWithAccounts1And2 balance + account3 balance equals: portfolioWithAccount3AndInnerPortfolioWithAccounts1And2 balance.
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:08:10'!
+!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:15:46'!
 test05PortfolioWithOneAccountKnowsRegisteredTransactions
 
 	| deposit | 
 	
 	deposit := Deposit register: 50 * peso on: account1.
 	
-	self assert: (self entity: portfolioWithAccount1 hasRegistered: {deposit}).
+	self assert: (self portfolio: portfolioWithAccount1 hasRegistered: {deposit}).
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:08:27'!
+!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:15:46'!
 test06PortfolioWithTwoAccountsKnowsRegisteredTransactions
 
 	| deposit1 deposit2 | 
@@ -142,9 +142,9 @@ test06PortfolioWithTwoAccountsKnowsRegisteredTransactions
 	deposit1 _ Deposit register: 50 * peso on: account1.
 	deposit2 _ Deposit register: 50 * peso on: account2.
 	
-	self assert: (self entity: portfolioWithAccounts1And2 hasRegistered: {deposit1. deposit2}).! !
+	self assert: (self portfolio: portfolioWithAccounts1And2 hasRegistered: {deposit1. deposit2}).! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:08:38'!
+!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:15:46'!
 test07PortfolioWithInnerPortfolioKnowsRegisteredTransactions
 
 	| deposit1 deposit2 | 
@@ -152,9 +152,9 @@ test07PortfolioWithInnerPortfolioKnowsRegisteredTransactions
 	deposit1 _ Deposit register: 50 * peso on: account1.
 	deposit2 _ Deposit register: 50 * peso on: account2.
 
-	self assert: (self entity: portfolioWithInnerPortfolioWithAccounts1And2 hasRegistered: {deposit1. deposit2}).! !
+	self assert: (self portfolio: portfolioWithInnerPortfolioWithAccounts1And2 hasRegistered: {deposit1. deposit2}).! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:09:19'!
+!PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:15:46'!
 test08PortfolioWithInnerPortfolioAndAnAccountKnowsRegisteredTransactions
 
 	| value deposit1 deposit2 deposit3 |
@@ -164,7 +164,7 @@ test08PortfolioWithInnerPortfolioAndAnAccountKnowsRegisteredTransactions
 	deposit2 _ Deposit register: value on: account2.
 	deposit3 _ Deposit register: value on: account3.
 		
-	self assert: (self entity: portfolioWithAccount3AndInnerPortfolioWithAccounts1And2 hasRegistered: {deposit1. deposit2. deposit3}).
+	self assert: (self portfolio: portfolioWithAccount3AndInnerPortfolioWithAccounts1And2 hasRegistered: {deposit1. deposit2. deposit3}).
 	! !
 
 !PortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:08:10'!
@@ -208,10 +208,10 @@ test14PortfolioCanAddPortfolioAfterCreation
 	! !
 
 
-!PortfolioTests methodsFor: 'testing' stamp: 'sm 6/7/2022 23:38:23'!
-entity: anEntity hasRegistered: transactions
+!PortfolioTests methodsFor: 'testing' stamp: 'JGC 6/9/2022 12:15:55'!
+portfolio: aPortfolio hasRegistered: transactions
 
-	^ transactions allSatisfy: [ :aTransaction | anEntity hasRegistered: aTransaction ].! !
+	^ transactions allSatisfy: [ :aTransaction | aPortfolio hasRegistered: aTransaction ].! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
@@ -342,30 +342,30 @@ setUp
 	portfolioWithInnerPortfolioWithAccount1 _ Portfolio createWith: {portfolioWithAccount1}.! !
 
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:03:45'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:18:23'!
 test01PortfolioWithAccountCannotAddSameAccount
 
-	self shouldAdding: account1 to: portfolioWithAccount1 raiseErrorWithDescription: Portfolio entityAlreadyInPortfolioHierarchyErrorDescription.! !
+	self shouldAdding: account1 to: portfolioWithAccount1 raiseErrorWithDescription: Portfolio financialEntityAlreadyInPortfolioHierarchyErrorDescription.! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:05:55'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:18:23'!
 test02PortfolioWithInnerPortfolioWithAnAccountCannotAddSameAccount
 
-	self shouldAdding: account1 to: portfolioWithInnerPortfolioWithAccount1 raiseErrorWithDescription: Portfolio entityAlreadyInPortfolioHierarchyErrorDescription.! !
+	self shouldAdding: account1 to: portfolioWithInnerPortfolioWithAccount1 raiseErrorWithDescription: Portfolio financialEntityAlreadyInPortfolioHierarchyErrorDescription.! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:06:19'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:18:23'!
 test03PortfolioCannotAddItself
 
-	self shouldAdding: portfolioEmpty to: portfolioEmpty raiseErrorWithDescription: Portfolio entityAlreadyInPortfolioHierarchyErrorDescription.! !
+	self shouldAdding: portfolioEmpty to: portfolioEmpty raiseErrorWithDescription: Portfolio financialEntityAlreadyInPortfolioHierarchyErrorDescription.! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:06:42'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:18:23'!
 test04PortfolioCannotAddAccountWhenAccountIsAlreadyInRootPorfolio
 
 
 	Portfolio createWith: {account1. portfolioEmpty}.
 	
-	self shouldAdding: account1 to: portfolioEmpty raiseErrorWithDescription: Portfolio entityAlreadyInPortfolioHierarchyErrorDescription.! !
+	self shouldAdding: account1 to: portfolioEmpty raiseErrorWithDescription: Portfolio financialEntityAlreadyInPortfolioHierarchyErrorDescription.! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:07:09'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:18:33'!
 test05PortfolioWithAnAccountCannotAddPortfolioWithSameAccount
 
 
@@ -373,9 +373,9 @@ test05PortfolioWithAnAccountCannotAddPortfolioWithSameAccount
 
 	portfolio _ Portfolio createWith: {account1}.
 	
-	self shouldAdding: portfolioWithAccount1 to: portfolio raiseErrorWithDescription: Portfolio portfolioIncludesEntityAlreadyInPortfolioHierarchyErrorDescription.! !
+	self shouldAdding: portfolioWithAccount1 to: portfolio raiseErrorWithDescription: Portfolio portfolioIncludesFinancialEntityAlreadyInPortfolioHierarchyErrorDescription.! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 20:07:42'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:18:23'!
 test06InnerPortfolioCannotAddRootPortfolio
 
 
@@ -383,9 +383,9 @@ test06InnerPortfolioCannotAddRootPortfolio
 
 	portfolio _ Portfolio createWith: {portfolioEmpty}.
 	
-	self shouldAdding: portfolio to: portfolioEmpty raiseErrorWithDescription: Portfolio entityAlreadyInPortfolioHierarchyErrorDescription.! !
+	self shouldAdding: portfolio to: portfolioEmpty raiseErrorWithDescription: Portfolio financialEntityAlreadyInPortfolioHierarchyErrorDescription.! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/8/2022 23:39:13'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'JGC 6/9/2022 12:18:23'!
 test07PortfolioIncludedInTwoDifferentPortfoliosCannotAddAccountIncludedInAnyOfBothHierarchies
 
 
@@ -396,8 +396,8 @@ test07PortfolioIncludedInTwoDifferentPortfoliosCannotAddAccountIncludedInAnyOfBo
 	portfolioWithAccount1 add: portfolio.
 	portfolioWithAccount2 add: portfolio.
 	
-	self shouldAdding: account1 to: portfolio raiseErrorWithDescription: Portfolio entityAlreadyInPortfolioHierarchyErrorDescription.
-	self shouldAdding: account2 to: portfolio raiseErrorWithDescription: Portfolio entityAlreadyInPortfolioHierarchyErrorDescription.! !
+	self shouldAdding: account1 to: portfolio raiseErrorWithDescription: Portfolio financialEntityAlreadyInPortfolioHierarchyErrorDescription.
+	self shouldAdding: account2 to: portfolio raiseErrorWithDescription: Portfolio financialEntityAlreadyInPortfolioHierarchyErrorDescription.! !
 
 
 !ValidPortfolioTests methodsFor: 'asserts' stamp: 'JGC 6/8/2022 19:57:32'!
@@ -613,68 +613,72 @@ initialize
 	financialEntities _ OrderedCollection new.
 	portfoliosContainingSelf _ OrderedCollection new.! !
 
-!Portfolio methodsFor: 'initialization' stamp: 'JGC 6/8/2022 18:55:08'!
-initializeWith: entitiesToAdd 
+!Portfolio methodsFor: 'initialization' stamp: 'JGC 6/9/2022 12:10:50'!
+initializeWith: financialEntitiesToAdd 
 	
-	entitiesToAdd do: [ :anEntity | self add: anEntity].! !
+	financialEntitiesToAdd do: [ :aFinancialEntity | self add: aFinancialEntity].! !
 
 
-!Portfolio methodsFor: 'main protocol' stamp: 'JGC 6/9/2022 00:25:42'!
-add: anEntityToBeAdded 
+!Portfolio methodsFor: 'main protocol' stamp: 'JGC 6/9/2022 12:11:17'!
+add: anFinancialEntityToBeAdded 
 
-	self assertEntityCanBeAdded: anEntityToBeAdded.
+	self assertFinancialEntityCanBeAdded: anFinancialEntityToBeAdded.
 	
-	(anEntityToBeAdded isKindOf: Portfolio) ifTrue:
-		[ anEntityToBeAdded addContainingPortfolio: self	].
+	(anFinancialEntityToBeAdded isKindOf: Portfolio) ifTrue:
+		[ anFinancialEntityToBeAdded addContainingPortfolio: self	].
 
-	financialEntities add: anEntityToBeAdded.! !
+	financialEntities add: anFinancialEntityToBeAdded.! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'JGC 6/9/2022 00:16:37'!
+!Portfolio methodsFor: 'main protocol' stamp: 'JGC 6/9/2022 12:11:45'!
 balance
 	
-	^ financialEntities sum: [ :anEntity | anEntity balance. ] ifEmpty: [ 0 * peso. ].! !
+	^ financialEntities sum: [ :aFinancialEntity | aFinancialEntity balance. ] ifEmpty: [ 0 * peso. ].! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'JGC 6/9/2022 00:16:37'!
+!Portfolio methodsFor: 'main protocol' stamp: 'JGC 6/9/2022 12:11:51'!
 hasRegistered: aTransaction 
 	
-	^ financialEntities anySatisfy: [ :anEntity | anEntity hasRegistered: aTransaction. ].! !
+	^ financialEntities anySatisfy: [ :aFinancialEntity | aFinancialEntity hasRegistered: aTransaction. ].! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'JGC 6/9/2022 00:16:37'!
+!Portfolio methodsFor: 'main protocol' stamp: 'JGC 6/9/2022 12:12:00'!
 transactions
 	
-	^ financialEntities inject: OrderedCollection new into: [ :transactions :anEntity | transactions, anEntity transactions ].
+	^ financialEntities inject: OrderedCollection new into: [ :transactions :aFinancialEntity | transactions, aFinancialEntity transactions ].
 	
 	! !
 
 
-!Portfolio methodsFor: 'asserts' stamp: 'JGC 6/9/2022 00:25:42'!
-assertEntityCanBeAdded: anEntityToBeAdded
+!Portfolio methodsFor: 'asserts' stamp: 'JGC 6/9/2022 12:12:55'!
+assertFinancialEntityCanBeAdded: aFinancialEntityToBeAdded
 
-	self assertEntityIsNotInPortfolioHierarchy: anEntityToBeAdded.
-	self assertEntityDoesNotIncludeAnEntityAlreadyInHierarchy: anEntityToBeAdded.! !
+	self assertFinancialEntityIsNotInPortfolioHierarchy: aFinancialEntityToBeAdded.
+	self assertFinancialEntityDoesNotIncludeAFinancialEntityAlreadyInHierarchy: aFinancialEntityToBeAdded.! !
 
-!Portfolio methodsFor: 'asserts' stamp: 'JGC 6/8/2022 19:52:42'!
-assertEntityDoesNotIncludeAnEntityAlreadyInHierarchy: anEntity
+!Portfolio methodsFor: 'asserts' stamp: 'JGC 6/9/2022 12:29:38'!
+assertFinancialEntityDoesNotIncludeAFinancialEntityAlreadyInHierarchy: aFinancialEntity
 
-	((anEntity isKindOf: Portfolio) and: [self portfolioHierarchyIncludesEntitiesFrom: anEntity])
-		ifTrue: [self class error: self class portfolioIncludesEntityAlreadyInPortfolioHierarchyErrorDescription ].! !
+	((aFinancialEntity isKindOf: Portfolio) and: [self portfolioHierarchyIncludesFinancialEntitiesFrom: aFinancialEntity])
+		ifTrue: [self class error: self class portfolioIncludesFinancialEntityAlreadyInPortfolioHierarchyErrorDescription ].! !
 
-!Portfolio methodsFor: 'asserts' stamp: 'JGC 6/8/2022 19:53:15'!
-assertEntityIsNotInPortfolioHierarchy: anEntity
+!Portfolio methodsFor: 'asserts' stamp: 'JGC 6/9/2022 12:29:45'!
+assertFinancialEntityIsNotInPortfolioHierarchy: aFinancialEntity
 
-	(self portfolioHierarchyIncludesEntity: anEntity)
-		ifTrue: [ self class error: self class entityAlreadyInPortfolioHierarchyErrorDescription ].! !
+	(self portfolioHierarchyIncludesFinancialEntity: aFinancialEntity)
+		ifTrue: [ self class error: self class financialEntityAlreadyInPortfolioHierarchyErrorDescription ].! !
 
 
-!Portfolio methodsFor: 'testing' stamp: 'JGC 6/9/2022 00:16:37'!
-portfolioHierarchyIncludesEntitiesFrom: aPortfolio
+!Portfolio methodsFor: 'testing' stamp: 'JGC 6/9/2022 12:36:00'!
+portfolioHierarchyIncludesFinancialEntitiesFrom: aPortfolio
 
-	^ financialEntities anySatisfy: [ :anEntity | aPortfolio includes: anEntity].! !
-
-!Portfolio methodsFor: 'testing' stamp: 'JGC 6/9/2022 00:28:37'!
-portfolioHierarchyIncludesEntity: anEntity
+	^ financialEntities anySatisfy: [ :aFinancialEntity | aPortfolio includes: aFinancialEntity].
 	
-	^ self highestLevelPortfolios anySatisfy: [ :aHighLevelPortfolio | (aHighLevelPortfolio includes: anEntity) or: [aHighLevelPortfolio = anEntity]].! !
+
+	
+	! !
+
+!Portfolio methodsFor: 'testing' stamp: 'JGC 6/9/2022 12:29:45'!
+portfolioHierarchyIncludesFinancialEntity: aFinancialEntity
+	
+	^ self highestLevelPortfolios anySatisfy: [ :aHighLevelPortfolio | (aHighLevelPortfolio includes: aFinancialEntity) or: [aHighLevelPortfolio = aFinancialEntity]].! !
 
 
 !Portfolio methodsFor: 'private' stamp: 'JGC 6/9/2022 00:29:01'!
@@ -682,10 +686,10 @@ addContainingPortfolio: aPortfolioThatContainsSelf
 
 	portfoliosContainingSelf add: aPortfolioThatContainsSelf.! !
 
-!Portfolio methodsFor: 'private' stamp: 'JGC 6/8/2022 23:53:44'!
-entity: anEntity includes: aPotentialIncludedEntity
+!Portfolio methodsFor: 'private' stamp: 'JGC 6/9/2022 12:14:23'!
+financialEntity: aFinancialEntity includes: aPotentialIncludedFinancialEntity
 
-	^ (anEntity isKindOf: Portfolio) and: [anEntity includes: aPotentialIncludedEntity].! !
+	^ (aFinancialEntity isKindOf: Portfolio) and: [aFinancialEntity includes: aPotentialIncludedFinancialEntity].! !
 
 !Portfolio methodsFor: 'private' stamp: 'JGC 6/9/2022 00:23:32'!
 highestLevelPortfolios
@@ -697,13 +701,13 @@ highestLevelPortfolios
 	
 	! !
 
-!Portfolio methodsFor: 'private' stamp: 'JGC 6/9/2022 00:16:37'!
+!Portfolio methodsFor: 'private' stamp: 'JGC 6/9/2022 12:14:52'!
 includes: aPotentialIncludedEntity
 
 	^ financialEntities anySatisfy: 
-		[ :anEntity | 
-			anEntity = aPotentialIncludedEntity or:
-		        [self entity: anEntity includes: aPotentialIncludedEntity].
+		[ :aFinancialEntity | 
+			aFinancialEntity = aPotentialIncludedEntity or:
+		        [self financialEntity: aFinancialEntity includes: aPotentialIncludedEntity].
 		]! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -712,19 +716,24 @@ includes: aPotentialIncludedEntity
 Portfolio class
 	instanceVariableNames: ''!
 
+!Portfolio class methodsFor: 'instance creation' stamp: 'JGC 6/9/2022 12:09:48'!
+create
+
+	^self new.! !
+
 !Portfolio class methodsFor: 'instance creation' stamp: 'JGC 6/8/2022 23:49:11'!
 createWith: entitiesToGroup 
 	
 	^ self new initializeWith: entitiesToGroup asOrderedCollection.! !
 
 
-!Portfolio class methodsFor: 'error descriptions' stamp: 'JGC 6/8/2022 19:22:41'!
-entityAlreadyInPortfolioHierarchyErrorDescription
+!Portfolio class methodsFor: 'error descriptions' stamp: 'JGC 6/9/2022 12:18:23'!
+financialEntityAlreadyInPortfolioHierarchyErrorDescription
 	
 	^ 'cannot add entity already in portfolio hierarchy'.! !
 
-!Portfolio class methodsFor: 'error descriptions' stamp: 'JGC 6/8/2022 23:49:32'!
-portfolioIncludesEntityAlreadyInPortfolioHierarchyErrorDescription
+!Portfolio class methodsFor: 'error descriptions' stamp: 'JGC 6/9/2022 12:18:33'!
+portfolioIncludesFinancialEntityAlreadyInPortfolioHierarchyErrorDescription
 
 	^ 'cannot add portfolio when it includes an entity already in portfolio hierarchy'.! !
 
