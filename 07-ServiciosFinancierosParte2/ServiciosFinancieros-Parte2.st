@@ -132,6 +132,14 @@ test07
 	
 	! !
 
+
+!AccountSummaryTest methodsFor: 'setUp' stamp: 'sm 6/13/2022 23:41:51'!
+setUp
+
+	" 1. código repetido de los tests (TODOS) y cambiarle el nombre en los nuestros
+	  2. mensaje general para account summary y transfer net (quizas transfer net tiene un colaborador interno net y bla bla)
+	 3. parte 2 del extra (reutiliza account summary)."! !
+
 
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Parte2'!
 TestCase subclass: #PortfolioTest
@@ -345,12 +353,12 @@ test15PortfolioCanNotIncludeAnyOfTheComposedAccountOfPortfolioToAdd
 			self assert: Portfolio canNotAddAccountErrorMessage equals: anError messageText.
 			self assert: portfolioToModify accountsIsEmpty ]! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'sm 6/12/2022 17:37:01'!
+!PortfolioTest methodsFor: 'tests' stamp: 'sm 6/13/2022 21:13:35'!
 test16PortfolioCanBeCreatedWithAName
 
 	| portfolio name |
 	
-	name _ 'portfolio del koala'.
+	name _ 'Portfolio de la granja'.
 	
 	portfolio _ Portfolio named: name.
 	
@@ -364,12 +372,12 @@ TestCase subclass: #PortfolioTreePrinterTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Parte2'!
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'sm 6/12/2022 17:44:28'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/13/2022 20:21:28'!
 test01
 
 	| treePrinter portfolio  expectedReport name |
 
-	name _ 'Portfolio del koala'.
+	name _ 'Portfolio de la granja'.
 	portfolio _ Portfolio named: name.
 	
 	treePrinter _ PortfolioTreePrinter from: portfolio.
@@ -378,18 +386,54 @@ test01
 	
 	self assert: expectedReport equals: treePrinter report.! !
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'sm 6/12/2022 17:49:57'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/13/2022 20:21:51'!
 test02
 
 	| treePrinter portfolio  expectedReport account |
 
-	account _ ReceptiveAccount named: 'Cuenta de Sol'.
-	portfolio _ Portfolio named: 'Portfolio del koala' with: account.
+	account _ ReceptiveAccount named: 'Cuenta de la vaca'.
+	portfolio _ Portfolio named: 'Portfolio de la granja' with: account.
 	
 	treePrinter _ PortfolioTreePrinter from: portfolio.
 	
-	expectedReport _ {'Portfolio del koala'. 
-					'    Cuenta de Sol'} asOrderedCollection.
+	expectedReport _ {'Portfolio de la granja'. 
+					'    Cuenta de la vaca'} asOrderedCollection.
+	
+	self assert: expectedReport equals: treePrinter report.! !
+
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/13/2022 20:34:10'!
+test03
+
+	| treePrinter portfolio  expectedReport account1 innerPortfolio |
+
+	account1 _ ReceptiveAccount named: 'Cuenta de la vaca'.
+	innerPortfolio _ Portfolio named: 'Portfolio de las gallinas'.
+	portfolio _ Portfolio named: 'Portfolio de la granja' with: account1 with: innerPortfolio.
+	
+	treePrinter _ PortfolioTreePrinter from: portfolio.
+	
+	expectedReport _ {'Portfolio de la granja'. 
+					'    Cuenta de la vaca'.
+					'    Portfolio de las gallinas'} asOrderedCollection.
+	
+	self assert: expectedReport equals: treePrinter report.! !
+
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/13/2022 21:16:52'!
+test04
+
+	| treePrinter portfolio  expectedReport account1 account2 innerPortfolio |
+
+	account1 _ ReceptiveAccount named: 'Cuenta de la gallina Clara'.
+	account2 _ ReceptiveAccount named: 'Cuenta de la gallina Ximena'.
+	innerPortfolio _ Portfolio named: 'Portfolio de las gallinas' with: account1 with: account2.
+	portfolio _ Portfolio named: 'Portfolio de la granja' with: innerPortfolio.
+	
+	treePrinter _ PortfolioTreePrinter from: portfolio.
+	
+	expectedReport _ {'Portfolio de la granja'. 
+					'    Portfolio de las gallinas'.
+					'        Cuenta de la gallina Clara'.
+					'        Cuenta de la gallina Ximena'} asOrderedCollection.
 	
 	self assert: expectedReport equals: treePrinter report.! !
 
@@ -484,12 +528,12 @@ test07AccountKnowsItsTransactions
 	self assert: (account transactions includes: deposit).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'sm 6/12/2022 17:39:04'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'sm 6/13/2022 21:13:18'!
 test08AccountCanBeCreatedWithAName
 
 	| account name |
 	
-	name _ 'julián'.
+	name _ 'Cuenta de la oveja'.
 	account := ReceptiveAccount named: name.
 	
 	self assert: name equals: account name.
@@ -745,6 +789,11 @@ name
 
 	^ name.! !
 
+!Account methodsFor: 'accessing' stamp: 'sm 6/13/2022 20:53:05'!
+reportForAccount
+
+	self subclassResponsibility.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Account class' category: 'ServiciosFinancieros-Parte2'!
@@ -823,6 +872,18 @@ addTransactionsTo: aCollectionOfTransactions
 	accounts do: [ :anAccount | anAccount addTransactionsTo: aCollectionOfTransactions ]! !
 
 
+!Portfolio methodsFor: 'report creation' stamp: 'sm 6/13/2022 20:57:02'!
+reportForAccount: aReport
+
+	^ aReport reportForAPortfolio: self.! !
+
+!Portfolio methodsFor: 'report creation' stamp: 'sm 6/13/2022 20:55:35'!
+reportForEachAccount: aReport
+
+	^ accounts inject: OrderedCollection new 
+		into: [ :fullReport :anAccount | fullReport, (anAccount reportForAccount: aReport)].! !
+
+
 !Portfolio methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:17:31'!
 addRootParentsTo: rootParents
 
@@ -846,10 +907,13 @@ assertCanAdd: accountToAdd
 	(self anyRootParentIsComposedBy: accountToAdd) ifTrue: [ self signalCanNotAddAccount ].
 ! !
 
-!Portfolio methodsFor: 'composition' stamp: 'HAW 5/29/2019 16:24:54'!
+!Portfolio methodsFor: 'composition' stamp: 'sm 6/13/2022 20:24:55'!
 isComposedBy: anAccount
 
-	^ self = anAccount or: [ accounts anySatisfy: [ :composedAccount | (composedAccount isComposedBy: anAccount) or: [ anAccount isComposedBy: composedAccount ]]]! !
+	^ self = anAccount or: 
+	[ accounts anySatisfy: 
+		[ :composedAccount | (composedAccount isComposedBy: anAccount) 
+						or: [ anAccount isComposedBy: composedAccount ]]]! !
 
 !Portfolio methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:17:31'!
 rootParents
@@ -963,6 +1027,12 @@ addedTo: aPortfolio
 isComposedBy: anAccount
 
 	^self = anAccount ! !
+
+
+!ReceptiveAccount methodsFor: 'accessing' stamp: 'sm 6/13/2022 20:58:00'!
+reportForAccount: aReport
+
+	^ aReport reportForAReceptiveAccount: self.! !
 
 
 !classDefinition: #AccountSummary category: 'ServiciosFinancieros-Parte2'!
@@ -1275,17 +1345,42 @@ initializeFrom: aPortfolio
 	portfolio := aPortfolio.! !
 
 
-!PortfolioTreePrinter methodsFor: 'main protocol' stamp: 'sm 6/12/2022 17:52:29'!
+!PortfolioTreePrinter methodsFor: 'main protocol' stamp: 'sm 6/13/2022 21:30:04'!
 report
 
-	| report |
+	| report indentedReports |
 	
 	report _ OrderedCollection new.
 	
 	report add: portfolio name.
-
+	indentedReports _ self indentedAccountReports.
+	report addAll: indentedReports.
 	
 	^ report.! !
+
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'sm 6/13/2022 21:31:07'!
+indentedAccountReports
+
+	| reports indentation |
+	
+	indentation _ '    '.
+	
+	reports _ portfolio reportForEachAccount: self.
+	
+	^ reports collect: [:aReport | indentation, aReport]. ! !
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'sm 6/13/2022 20:57:43'!
+reportForAPortfolio: aPortfolio
+
+	^ (PortfolioTreePrinter from: aPortfolio) report.
+	! !
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'sm 6/13/2022 20:57:37'!
+reportForAReceptiveAccount: aReceptiveAccount
+
+	^ OrderedCollection with: aReceptiveAccount name.
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
