@@ -946,12 +946,13 @@ signalCanNotAddAccount
 	self error: self class canNotAddAccountErrorMessage! !
 
 
-!Portfolio methodsFor: 'visit behaviour' stamp: 'JGC 6/14/2022 15:26:58'!
+!Portfolio methodsFor: 'visit behaviour' stamp: 'sm 6/14/2022 22:55:46'!
 visitAccountsFor: aVisitor
 
 	^ accounts inject: OrderedCollection new 
 		into: [ :fullReport :anAccount | fullReport, (anAccount visitWith: aVisitor)].
-! !
+	
+	"esto tendria que estar en el report"! !
 
 !Portfolio methodsFor: 'visit behaviour' stamp: 'JGC 6/14/2022 13:45:32'!
 visitWith: aReport
