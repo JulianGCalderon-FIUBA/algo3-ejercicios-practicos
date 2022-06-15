@@ -103,55 +103,38 @@ setUp
 
 !classDefinition: #PortfolioDetailedTreePrinterTest category: 'ServiciosFinancieros-Parte2'!
 TestCase subclass: #PortfolioDetailedTreePrinterTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'portfolioZoologico portfolioAves accountFlamenco accountOso'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Parte2'!
 
-!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'JGC 6/14/2022 15:50:24'!
-test01
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/14/2022 20:49:49'!
+test01PortfolioDetailedTreePrinterFromEmptyPortfolioPrintsNameAndZeroBalance
 
-	| portfolio detailedTreePrinter expectedReport |
-	portfolio _ Portfolio named: 'Portfolio del zoológico'.
-	
-	detailedTreePrinter _ PortfolioDetailedTreePrinter from: portfolio.
-	
+	| expectedReport |
 	expectedReport _ {'Portfolio del zoológico'.
 					  '    Balance: 0'} asOrderedCollection.
 	
-	self assert: expectedReport equals: detailedTreePrinter report.! !
+	self assertAReport: expectedReport equalsPortfolioZoologicoDetailedTreePrinterAfter: [].! !
 
-!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'JGC 6/14/2022 15:50:21'!
-test02
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/14/2022 20:53:26'!
+test02PortfolioDetailedTreePrinterFromPortfolioWithAccoutPrintsAccountNamesAccountSummaryAndTotalBalance
 
-	| portfolio detailedTreePrinter expectedReport account1 |
-	
-	account1 _ ReceptiveAccount named: 'Cuenta de la zebra'.
-	Deposit register: 50 * peso on: account1.
-	portfolio _ Portfolio named: 'Portfolio del zoológico' with: account1.
-	
-	detailedTreePrinter _ PortfolioDetailedTreePrinter from: portfolio.
-	
+	| expectedReport |
 	expectedReport _ {'Portfolio del zoológico'.
-					'    Cuenta de la zebra'.
+					'    Cuenta del flamenco'.
 					'        Depósito por 50 * pesos'.
 					'        Balance: 50 * pesos'.
 					'    Balance: 50 * pesos'} asOrderedCollection.
 	
-	self assert: expectedReport equals: detailedTreePrinter report.! !
+	self assertAReport: expectedReport equalsPortfolioZoologicoDetailedTreePrinterAfter: [
+						portfolioZoologico add: accountFlamenco.
+						Deposit register: 50 * peso on: accountFlamenco].! !
 
-!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'JGC 6/14/2022 15:54:45'!
-test03
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/14/2022 20:53:22'!
+test03PortfolioDetailedTreePrinterFromPortfolioWithInnerPortfolioWithAccountPrintsAccountNamesAccountSummaryAndBalances
 
-	| portfolio detailedTreePrinter expectedReport account1 innerPortfolio |
-	
-	account1 _ ReceptiveAccount named: 'Cuenta del flamenco'.
-	Deposit register: 50 * peso on: account1.
-	innerPortfolio _ Portfolio named: 'Portfolio de las aves' with: account1.
-	portfolio _ Portfolio named: 'Portfolio del zoológico' with: innerPortfolio.
-	
-	detailedTreePrinter _ PortfolioDetailedTreePrinter from: portfolio.
-	
+	| expectedReport |
 	expectedReport _ {'Portfolio del zoológico'.
 					'    Portfolio de las aves'.
 					'        Cuenta del flamenco'.
@@ -160,7 +143,49 @@ test03
 					'        Balance: 50 * pesos'.
 					'    Balance: 50 * pesos'} asOrderedCollection.
 	
-	self assert: expectedReport equals: detailedTreePrinter report.! !
+	self assertAReport: expectedReport equalsPortfolioZoologicoDetailedTreePrinterAfter: [
+	portfolioAves add: accountFlamenco.
+	portfolioZoologico add: portfolioAves.
+	Deposit register: 50 * peso on: accountFlamenco.
+].! !
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/14/2022 20:58:03'!
+test04PortfolioDetailedTreePrinterFromPortfolioWithTwoAccountsPrintsAccountNamesAccountSummariesAndBalance
+
+	| expectedReport |
+	expectedReport _ {'Portfolio del zoológico'.
+					'    Cuenta del flamenco'.
+					'        Depósito por 50 * pesos'.
+					'        Balance: 50 * pesos'.
+					'    Cuenta del oso'.
+					'        Extracción por 30 * pesos'.
+					'        Balance: -30 * pesos'.
+					'    Balance: 20 * pesos'} asOrderedCollection.
+	
+	self assertAReport: expectedReport equalsPortfolioZoologicoDetailedTreePrinterAfter: [
+	portfolioZoologico add: accountFlamenco.
+	portfolioZoologico add: accountOso.
+	Deposit register: 50 * peso on: accountFlamenco.
+	Withdraw register: 30 * peso on: accountOso.
+].! !
+
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'setUp' stamp: 'sm 6/14/2022 20:56:32'!
+setUp
+
+	portfolioZoologico _ Portfolio named: 'Portfolio del zoológico'.
+	portfolioAves _ Portfolio named: 'Portfolio de las aves'.
+	
+	accountFlamenco _ ReceptiveAccount named: 'Cuenta del flamenco'.
+	accountOso _ ReceptiveAccount named: 'Cuenta del oso'.
+	! !
+
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'asserts' stamp: 'sm 6/14/2022 20:47:45'!
+assertAReport: anExpectedReport equalsPortfolioZoologicoDetailedTreePrinterAfter: aBlockToBeEvaluated
+
+	aBlockToBeEvaluated value.
+	self assert: anExpectedReport equals: (PortfolioDetailedTreePrinter from: portfolioZoologico) report.! !
 
 
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Parte2'!
@@ -389,75 +414,72 @@ test16PortfolioCanBeCreatedWithAName
 
 !classDefinition: #PortfolioTreePrinterTest category: 'ServiciosFinancieros-Parte2'!
 TestCase subclass: #PortfolioTreePrinterTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'portfolioGranja accountVaca portfolioGallinas accountGallinaClara accountGallinaXimena'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Parte2'!
 
-!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/13/2022 20:21:28'!
-test01
+!PortfolioTreePrinterTest methodsFor: 'setUp' stamp: 'sm 6/14/2022 20:23:57'!
+setUp
 
-	| treePrinter portfolio  expectedReport name |
+	portfolioGranja _ Portfolio named: 'Portfolio de la granja'.
+	portfolioGallinas _ Portfolio named: 'Portfolio de las gallinas'.
+	
+	accountVaca _ ReceptiveAccount named: 'Cuenta de la vaca'.
+	accountGallinaClara _ ReceptiveAccount named: 'Cuenta de la gallina Clara'.
+	accountGallinaXimena _ ReceptiveAccount named: 'Cuenta de la gallina Ximena'.! !
 
-	name _ 'Portfolio de la granja'.
-	portfolio _ Portfolio named: name.
-	
-	treePrinter _ PortfolioTreePrinter from: portfolio.
-	
-	expectedReport _ {name} asOrderedCollection.
-	
-	self assert: expectedReport equals: treePrinter report.! !
 
-!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/13/2022 20:21:51'!
-test02
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/14/2022 20:39:46'!
+test01PortfolioTreePrinterFromEmptyPortfolioPrintsPortfolioName
 
-	| treePrinter portfolio  expectedReport account |
+	| expectedReport |
+	expectedReport _ {'Portfolio de la granja'} asOrderedCollection.
+	
+	self assertAReport: expectedReport equalsPortfolioGranjaTreePrinterAfter: [].! !
 
-	account _ ReceptiveAccount named: 'Cuenta de la vaca'.
-	portfolio _ Portfolio named: 'Portfolio de la granja' with: account.
-	
-	treePrinter _ PortfolioTreePrinter from: portfolio.
-	
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/14/2022 20:40:16'!
+test02PortfolioTreePrinterFromPortfolioWithAccountPrintsBothNames
+
+	| expectedReport accountAdding |
 	expectedReport _ {'Portfolio de la granja'. 
 					'    Cuenta de la vaca'} asOrderedCollection.
+	accountAdding _ [portfolioGranja add: accountVaca].
 	
-	self assert: expectedReport equals: treePrinter report.! !
+	self assertAReport: expectedReport equalsPortfolioGranjaTreePrinterAfter: accountAdding.! !
 
-!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/13/2022 20:34:10'!
-test03
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/14/2022 20:41:22'!
+test03PortfolioTreePrinterFromPortfolioWithAccountAndInnerPortfolioPrintsNames
 
-	| treePrinter portfolio  expectedReport account1 innerPortfolio |
-
-	account1 _ ReceptiveAccount named: 'Cuenta de la vaca'.
-	innerPortfolio _ Portfolio named: 'Portfolio de las gallinas'.
-	portfolio _ Portfolio named: 'Portfolio de la granja' with: account1 with: innerPortfolio.
-	
-	treePrinter _ PortfolioTreePrinter from: portfolio.
-	
+	| expectedReport accountAdding |
 	expectedReport _ {'Portfolio de la granja'. 
 					'    Cuenta de la vaca'.
 					'    Portfolio de las gallinas'} asOrderedCollection.
-	
-	self assert: expectedReport equals: treePrinter report.! !
+	accountAdding _ [portfolioGranja add: accountVaca. 
+							portfolioGranja add: portfolioGallinas].
+						
+	self assertAReport: expectedReport equalsPortfolioGranjaTreePrinterAfter: accountAdding.! !
 
-!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/13/2022 21:16:52'!
-test04
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'sm 6/14/2022 20:41:15'!
+test04PortfolioTreePrinterFromPortfolioWithInnerPortfolioWithTwoAccountsPrintsNames
 
-	| treePrinter portfolio  expectedReport account1 account2 innerPortfolio |
-
-	account1 _ ReceptiveAccount named: 'Cuenta de la gallina Clara'.
-	account2 _ ReceptiveAccount named: 'Cuenta de la gallina Ximena'.
-	innerPortfolio _ Portfolio named: 'Portfolio de las gallinas' with: account1 with: account2.
-	portfolio _ Portfolio named: 'Portfolio de la granja' with: innerPortfolio.
-	
-	treePrinter _ PortfolioTreePrinter from: portfolio.
-	
+	| expectedReport accountAdding |
 	expectedReport _ {'Portfolio de la granja'. 
 					'    Portfolio de las gallinas'.
 					'        Cuenta de la gallina Clara'.
 					'        Cuenta de la gallina Ximena'} asOrderedCollection.
-	
-	self assert: expectedReport equals: treePrinter report.! !
+	accountAdding _ [portfolioGallinas add: accountGallinaClara.
+				portfolioGallinas add: accountGallinaXimena.
+				portfolioGranja add: portfolioGallinas.].
+						
+	self assertAReport: expectedReport equalsPortfolioGranjaTreePrinterAfter: accountAdding.! !
+
+
+!PortfolioTreePrinterTest methodsFor: 'asserts' stamp: 'sm 6/14/2022 20:34:11'!
+assertAReport: anExpectedReport equalsPortfolioGranjaTreePrinterAfter: aBlockToBeEvaluated
+
+	aBlockToBeEvaluated value.
+	self assert: anExpectedReport equals: (PortfolioTreePrinter from: portfolioGranja ) report.! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Parte2'!
@@ -877,7 +899,6 @@ addTransactionsTo: aCollectionOfTransactions
 	accounts do: [ :anAccount | anAccount addTransactionsTo: aCollectionOfTransactions ]! !
 
 
-
 !Portfolio methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:17:31'!
 addRootParentsTo: rootParents
 
@@ -1040,7 +1061,6 @@ isComposedBy: anAccount
 visitWith: aReport
 
 	^ aReport visitReceptiveAccount: self.! !
-
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Parte2'!
@@ -1294,7 +1314,6 @@ Report subclass: #AccountSummary
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Parte2'!
 
-
 !AccountSummary methodsFor: 'main protocol' stamp: 'JGC 6/14/2022 14:46:04'!
 report
 
@@ -1387,7 +1406,6 @@ Report subclass: #PortfolioTreePrinter
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Parte2'!
-
 
 !PortfolioTreePrinter methodsFor: 'main protocol' stamp: 'JGC 6/14/2022 15:26:44'!
 report
